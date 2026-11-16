@@ -37,7 +37,11 @@
       "preview": "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-apercu-mwjgc34b.jpg",
       "images": [
         "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg"
-      ]
+      ],
+      "ai": "Mistral Vibe · modèle GLM 5.3",
+      "carbonSrc": "cf. section Informations de l'application",
+      "fit": true,
+      "carbon": "0,13"
     }
   ]
 }
