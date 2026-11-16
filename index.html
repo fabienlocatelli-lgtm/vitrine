@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vitrine : mes projets créés en vibe-coding</title>
+<meta name="description" content="Un aperçu des projets que j’ai créés avec l’aide de l’IA.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vitrine : mes projets créés en vibe-coding">
+<meta property="og:description" content="Un aperçu des projets que j’ai créés avec l’aide de l’IA.">
+<meta property="og:image" content="https://fabienlocatelli-lgtm.github.io/vitrine/og-image.png">
+<meta property="og:url" content="https://fabienlocatelli-lgtm.github.io/vitrine/">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--bg:#13161b;--surface:#1b1f26;--surface2:#232831;--line:#2d333d;--text:#e9ebef;--muted:#9aa3b2;--accent:#7fb2ff;--accent-ink:#0b1220;--danger:#ff7b7b;--ok:#6fd6a0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#f5f6f8;--surface:#ffffff;--surface2:#eceef2;--line:#d9dde4;--text:#1a1e25;--muted:#5d6676;--accent:#1f5fd1;--accent-ink:#ffffff;--danger:#c23a3a;--ok:#1c8a5a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.brand{font-weight:600;letter-spacing:.01em;color:var(--muted)}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:8px;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--surface2)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:600}
+button.primary:hover{filter:brightness(1.08);background:var(--accent)}
+button.danger{color:var(--danger)}
+button:disabled{opacity:.5;cursor:default}
+#theme{width:42px;height:42px;padding:0;font-size:18px;border-radius:50%}
+.hero{padding:56px 0 40px;max-width:760px}
+.hero h1{font-size:clamp(2rem,5.5vw,3.4rem);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em;font-weight:700}
+.hero .tagline{font-size:1.2rem;color:var(--muted);margin:0 0 22px}
+.hero .intro{margin:0 0 6px;max-width:62ch;white-space:pre-line}
+.hero .who{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;padding-bottom:60px}
+.tile{display:flex;flex-direction:column;text-align:left;padding:0;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line);transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--surface)}
+.thumb{aspect-ratio:16/10;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--muted);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.tile h2{margin:0;font-size:1.15rem}
+.tile p{margin:0;color:var(--muted);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.tag{font-size:.78rem;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface2)}
+.empty{color:var(--muted);padding:40px 0}
+footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--muted);font-size:.9rem}
+/* modale */
+.overlay{position:fixed;inset:0;background:rgba(5,8,12,.72);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:4vh 14px;z-index:20}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:820px;width:100%;padding:26px;position:relative}
+.modal h2{margin:0 0 6px;font-size:1.6rem}
+.modal .sum{color:var(--muted);margin:0 0 14px}
+.modal .desc{white-space:pre-line;max-width:68ch}
+.modal .close{position:absolute;top:14px;right:14px;width:36px;height:36px;padding:0;border-radius:50%}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:18px 0}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+/* admin */
+#admin{padding:10px 0 80px}
+#admin h1{font-size:1.6rem;margin:10px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0}
+.card h3{margin:0 0 12px;font-size:1.05rem}
+label{display:block;font-size:.88rem;color:var(--muted);margin:12px 0 4px}
+input[type=text],input[type=password],textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:0 0 auto}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.plist li:first-child{border-top:0}
+.plist .t{flex:1;min-width:140px;font-weight:600}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.thumbs figure{margin:0;position:relative}
+.thumbs img{height:84px;border-radius:8px;border:1px solid var(--line);display:block}
+.thumbs button{position:absolute;top:3px;right:3px;padding:0 7px;font-size:.85rem;line-height:1.5}
+.status{margin-top:12px;font-size:.92rem;min-height:1.4em;white-space:pre-line}
+.status.err{color:var(--danger)}.status.ok{color:var(--ok)}
+.hint{color:var(--muted);font-size:.85rem;margin:6px 0 0}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <span class="brand" id="brand">Vitrine</span>
+  <button id="theme" type="button" aria-label="Changer de thème">☀</button>
+</header>
+
+<main id="public">
+  <section class="hero">
+    <h1 id="h-title"></h1>
+    <p class="tagline" id="h-tag"></p>
+    <p class="intro" id="h-intro"></p>
+    <p class="who" id="h-who"></p>
+  </section>
+  <section class="grid" id="grid" aria-label="Projets"></section>
+</main>
+
+<main id="admin" hidden>
+  <div class="row" style="justify-content:space-between">
+    <h1>Administration</h1>
+    <a class="btn" href="#" id="back">Retour au site</a>
+  </div>
+
+  <div class="card">
+    <h3>1. Connexion à GitHub</h3>
+    <div class="cols">
+      <div><label for="c-owner">Compte</label><input type="text" id="c-owner"></div>
+      <div><label for="c-repo">Dépôt</label><input type="text" id="c-repo"></div>
+      <div><label for="c-branch">Branche</label><input type="text" id="c-branch"></div>
+    </div>
+    <label for="c-token">Jeton d’accès (fine-grained, permission « Contents : Read and write » sur ce dépôt)</label>
+    <input type="password" id="c-token" autocomplete="off" placeholder="github_pat_…">
+    <p class="hint">Le jeton reste uniquement dans ce navigateur. Ne l’enregistre pas sur un ordinateur partagé.</p>
+    <div class="row" style="margin-top:12px">
+      <label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" id="c-remember"> Mémoriser le jeton sur cet appareil</label>
+      <button type="button" id="c-load" class="primary">Charger les données du site</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. Textes de la page</h3>
+    <label for="s-title">Titre</label><input type="text" id="s-title">
+    <label for="s-tag">Accroche</label><input type="text" id="s-tag">
+    <label for="s-intro">Présentation</label><textarea id="s-intro"></textarea>
+    <div class="cols">
+      <div><label for="s-name">Nom</label><input type="text" id="s-name"></div>
+      <div><label for="s-role">Rôle (optionnel)</label><input type="text" id="s-role"></div>
+      <div><label for="s-linkedin">Lien LinkedIn</label><input type="text" id="s-linkedin" placeholder="https://www.linkedin.com/in/…"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. Projets</h3>
+    <ul class="plist" id="plist"></ul>
+    <div class="row" style="margin-top:12px"><button type="button" id="p-new">Ajouter un projet</button></div>
+  </div>
+
+  <div class="card" id="editor" hidden>
+    <h3 id="e-head">Projet</h3>
+    <label for="e-title">Titre</label><input type="text" id="e-title">
+    <label for="e-sum">Aperçu (1 à 2 phrases, affiché sur la tuile)</label><input type="text" id="e-sum">
+    <label for="e-desc">Description complète</label><textarea id="e-desc"></textarea>
+    <label for="e-tags">Étiquettes (séparées par des virgules)</label><input type="text" id="e-tags" placeholder="python, web/html/css">
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div><label for="e-link">Lien vers le projet (optionnel)</label><input type="text" id="e-link" placeholder="https://…"></div>
+      <div><label for="e-git">Lien vers le dépôt Git (optionnel)</label><input type="text" id="e-git" placeholder="https://github.com/…"></div>
+    </div>
+    <label for="e-prev">Image de la tuile</label>
+    <input type="file" id="e-prev" accept="image/*">
+    <div class="thumbs" id="e-prev-th"></div>
+    <label for="e-imgs">Captures d’écran (plusieurs possibles)</label>
+    <input type="file" id="e-imgs" accept="image/*" multiple>
+    <div class="thumbs" id="e-imgs-th"></div>
+    <div class="row" style="margin-top:16px">
+      <button type="button" id="e-ok" class="primary">Valider le projet</button>
+      <button type="button" id="e-cancel">Annuler</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>4. Publier</h3>
+    <p class="hint" style="margin:0 0 10px">Les images sont réduites automatiquement. Après la publication, le site se met à jour en 1 à 2 minutes.</p>
+    <div class="row">
+      <button type="button" id="publish" class="primary">Publier sur GitHub</button>
+      <button type="button" id="export">Télécharger projects.json (secours)</button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+  </div>
+</main>
+
+<footer><div id="f-links"></div></footer>
+</div>
+
+<div class="overlay" id="overlay" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" id="modal"></div></div>
+
+<script>
+/* Données de repli : utilisées tant que projects.json n’existe pas dans le dépôt. */
+const DEFAULT={
+  site:{title:"Mes projets créés en vibe-coding",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:""},
+  projects:[
+    {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
+    {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
+  ]
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+const safeImg=u=>/^(img\/|https:\/\/|data:image\/)/i.test(u||"")?u:"";
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+let DATA=structuredClone(DEFAULT);
+
+/* Thème */
+function setTheme(t){document.documentElement.dataset.theme=t;$("#theme").textContent=t==="dark"?"☀":"☾";$("#theme").setAttribute("aria-label",t==="dark"?"Passer au thème clair":"Passer au thème sombre");store.set("vit_theme",t)}
+$("#theme").onclick=()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");
+setTheme(store.get("vit_theme")==="light"?"light":"dark");
+
+/* Rendu public */
+function renderSite(){
+  const s=DATA.site;
+  document.title=s.title||"Vitrine";
+  $("#brand").textContent=s.name||"Vitrine";
+  $("#h-title").textContent=s.title||"";
+  $("#h-tag").textContent=s.tagline||"";
+  $("#h-intro").textContent=s.intro||"";
+  $("#h-who").textContent=[s.name,s.role].filter(Boolean).join(", ");
+  const li=safeUrl(s.linkedin);
+  $("#f-links").innerHTML=li?`<a href="${esc(li)}" target="_blank" rel="noopener noreferrer">Me retrouver sur LinkedIn</a>`:"";
+  const g=$("#grid");
+  if(!DATA.projects.length){g.innerHTML='<p class="empty">Aucun projet pour l’instant.</p>';return}
+  g.innerHTML=DATA.projects.map((p,i)=>{
+    const im=safeImg(p.preview);
+    return `<button type="button" class="tile" data-i="${i}">
+      <div class="thumb">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
+      <div class="body"><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p>
+      <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div></button>`}).join("");
+  g.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
+}
+let lastFocus=null;
+function openModal(p,from){
+  lastFocus=from;
+  const shots=(p.images||[]).map(safeImg).filter(Boolean).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer"><img src="${esc(u)}" alt="Capture d’écran de ${esc(p.title)}" loading="lazy"></a>`).join("");
+  const l=safeUrl(p.link),g=safeUrl(p.git);
+  $("#modal").innerHTML=`<button type="button" class="close" aria-label="Fermer">✕</button>
+    <h2 id="m-title">${esc(p.title)}</h2><p class="sum">${esc(p.summary)}</p>
+    <div class="tags" style="margin:0 0 14px">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    <div class="desc">${esc(p.description)}</div>
+    ${shots?`<div class="shots">${shots}</div>`:""}
+    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}</div>`;
+  $("#overlay").hidden=false;document.body.style.overflow="hidden";
+  $("#modal .close").onclick=closeModal;$("#modal .close").focus();
+}
+function closeModal(){$("#overlay").hidden=true;document.body.style.overflow="";if(lastFocus)lastFocus.focus()}
+$("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#overlay").hidden)closeModal()});
+
+/* Chargement */
+async function loadPublic(){
+  try{const r=await fetch("projects.json?"+Date.now());if(r.ok){const d=await r.json();if(d&&Array.isArray(d.projects))DATA={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects}}}catch(e){}
+  renderSite();
+}
+
+/* Routage #admin */
+function route(){
+  const adm=location.hash==="#admin";
+  $("#public").hidden=adm;$("#admin").hidden=!adm;
+  if(adm)initAdmin();
+}
+$("#back").onclick=e=>{e.preventDefault();history.pushState(null,"",location.pathname);route();renderSite()};
+addEventListener("hashchange",route);
+
+/* ===== Administration ===== */
+let adminReady=false,draft=null,toDelete=[],editing=null,ed=null;
+const cfg=()=>({owner:$("#c-owner").value.trim(),repo:$("#c-repo").value.trim(),branch:$("#c-branch").value.trim()||"main",token:$("#c-token").value.trim()});
+function status(msg,type){const s=$("#status");s.textContent=msg;s.className="status "+(type||"")}
+function initAdmin(){
+  if(adminReady)return;adminReady=true;
+  $("#c-owner").value=store.get("vit_owner")||"fabienlocatelli-lgtm";
+  $("#c-repo").value=store.get("vit_repo")||"vitrine";
+  $("#c-branch").value=store.get("vit_branch")||"main";
+  const t=store.get("vit_token");if(t){$("#c-token").value=t;$("#c-remember").checked=true}
+  draft=structuredClone(DATA);bindSite();renderList();
+  $("#c-load").onclick=loadFromGitHub;
+  $("#p-new").onclick=()=>startEdit(null);
+  $("#e-ok").onclick=validateEdit;
+  $("#e-cancel").onclick=()=>{$("#editor").hidden=true;ed=null};
+  $("#e-prev").onchange=async e=>{const f=e.target.files[0];if(f){ed.preview=await compress(f,900,.82);renderThumbs()}e.target.value=""};
+  $("#e-imgs").onchange=async e=>{for(const f of e.target.files)ed.images.push(await compress(f,1600,.82));renderThumbs();e.target.value=""};
+  $("#publish").onclick=publish;
+  $("#export").onclick=exportJson;
+}
+const siteMap={title:"#s-title",tagline:"#s-tag",intro:"#s-intro",name:"#s-name",role:"#s-role",linkedin:"#s-linkedin"};
+function bindSite(){for(const k in siteMap){const el=$(siteMap[k]);el.value=draft.site[k]||"";el.oninput=()=>{draft.site[k]=el.value}}}
+function renderList(){
+  const ul=$("#plist");
+  if(!draft.projects.length){ul.innerHTML='<li class="hint">Aucun projet. Ajoute le premier.</li>';return}
+  ul.innerHTML=draft.projects.map((p,i)=>`<li><span class="t">${esc(p.title)}</span>
+    <button type="button" data-a="up" data-i="${i}" aria-label="Monter" ${i===0?"disabled":""}>↑</button>
+    <button type="button" data-a="down" data-i="${i}" aria-label="Descendre" ${i===draft.projects.length-1?"disabled":""}>↓</button>
+    <button type="button" data-a="edit" data-i="${i}">Modifier</button>
+    <button type="button" class="danger" data-a="del" data-i="${i}">Supprimer</button></li>`).join("");
+  ul.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,a=b.dataset.a,P=draft.projects;
+    if(a==="up"&&i>0)[P[i-1],P[i]]=[P[i],P[i-1]];
+    if(a==="down"&&i<P.length-1)[P[i+1],P[i]]=[P[i],P[i+1]];
+    if(a==="edit")return startEdit(i);
+    if(a==="del"){if(!confirm("Supprimer « "+P[i].title+" » ?"))return;queueDelete(P[i]);P.splice(i,1)}
+    renderList();
+  });
+}
+function queueDelete(p){[p.preview,...(p.images||[])].forEach(u=>{if(u&&u.startsWith("img/"))toDelete.push(u)})}
+function startEdit(i){
+  editing=i;
+  ed=i===null?{id:"",title:"",summary:"",description:"",tags:[],link:"",git:"",preview:"",images:[]}:structuredClone(draft.projects[i]);
+  $("#e-head").textContent=i===null?"Nouveau projet":"Modifier le projet";
+  $("#e-title").value=ed.title;$("#e-sum").value=ed.summary;$("#e-desc").value=ed.description;
+  $("#e-tags").value=(ed.tags||[]).join(", ");$("#e-link").value=ed.link||"";$("#e-git").value=ed.git||"";
+  renderThumbs();$("#editor").hidden=false;$("#editor").scrollIntoView({behavior:"smooth"});$("#e-title").focus();
+}
+function renderThumbs(){
+  $("#e-prev-th").innerHTML=ed.preview?`<figure><img src="${esc(ed.preview)}" alt="Aperçu"><button type="button" data-k="p" aria-label="Retirer">✕</button></figure>`:"";
+  $("#e-imgs-th").innerHTML=ed.images.map((u,i)=>`<figure><img src="${esc(u)}" alt="Capture ${i+1}"><button type="button" data-k="i" data-i="${i}" aria-label="Retirer">✕</button></figure>`).join("");
+  document.querySelectorAll(".thumbs button").forEach(b=>b.onclick=()=>{
+    if(b.dataset.k==="p"){if(ed.preview.startsWith("img/"))toDelete.push(ed.preview);ed.preview=""}
+    else{const u=ed.images.splice(+b.dataset.i,1)[0];if(u.startsWith("img/"))toDelete.push(u)}
+    renderThumbs();
+  });
+}
+const slug=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40)||"projet";
+function validateEdit(){
+  const t=$("#e-title").value.trim();if(!t){alert("Le titre est obligatoire.");return}
+  ed.title=t;ed.summary=$("#e-sum").value.trim();ed.description=$("#e-desc").value.trim();
+  ed.tags=$("#e-tags").value.split(",").map(x=>x.trim()).filter(Boolean);
+  ed.link=$("#e-link").value.trim();ed.git=$("#e-git").value.trim();
+  if(!ed.id)ed.id=slug(t)+"-"+Date.now().toString(36);
+  if(editing===null)draft.projects.push(ed);else draft.projects[editing]=ed;
+  $("#editor").hidden=true;ed=null;renderList();
+  status("Projet validé. N’oublie pas de publier.","ok");
+}
+function compress(file,max,q){return new Promise((res,rej)=>{
+  const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
+    c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+    const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",q))};
+  img.onerror=()=>rej(new Error("Image illisible"));img.src=u})}
+
+/* API GitHub */
+const u8b64=s=>{let t="";new TextEncoder().encode(s).forEach(c=>t+=String.fromCharCode(c));return btoa(t)};
+const b64u8=b=>new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g,"")),c=>c.charCodeAt(0)));
+async function gh(path,method,body){
+  const c=cfg();if(!c.token)throw new Error("Jeton manquant.");
+  const url=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${path}`+(method==="GET"?`?ref=${encodeURIComponent(c.branch)}`:"");
+  const r=await fetch(url,{method,headers:{Authorization:"Bearer "+c.token,Accept:"application/vnd.github+json"},body:body?JSON.stringify({...body,branch:c.branch}):undefined});
+  if(r.status===404&&method==="GET")return null;
+  if(!r.ok){let m="";try{m=(await r.json()).message}catch(e){}throw new Error(`GitHub ${r.status} : ${m||"erreur"}`)}
+  return r.status===204?{}:r.json();
+}
+function saveCfg(){const c=cfg();store.set("vit_owner",c.owner);store.set("vit_repo",c.repo);store.set("vit_branch",c.branch);
+  if($("#c-remember").checked)store.set("vit_token",c.token);else store.del("vit_token")}
+async function loadFromGitHub(){
+  try{saveCfg();status("Chargement…");
+    const f=await gh("projects.json","GET");
+    if(f){const d=JSON.parse(b64u8(f.content));draft={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects||[]};status("Données chargées depuis GitHub.","ok")}
+    else{status("Pas encore de projects.json dans le dépôt : l’exemple par défaut est conservé. Il sera créé à la première publication.","ok")}
+    toDelete=[];bindSite();renderList();
+  }catch(e){status(e.message,"err")}
+}
+async function publish(){
+  const btn=$("#publish");btn.disabled=true;
+  try{saveCfg();
+    const out=structuredClone(draft);let n=0;
+    const up=async(dataUrl,name)=>{status("Envoi de l’image "+(++n)+"…");
+      await gh(name,"PUT",{message:"Ajout image "+name,content:dataUrl.split(",")[1]});return name};
+    for(const p of out.projects){
+      const stamp=Date.now().toString(36);
+      if(p.preview.startsWith("data:"))p.preview=await up(p.preview,`img/${p.id}-apercu-${stamp}.jpg`);
+      for(let i=0;i<p.images.length;i++)if(p.images[i].startsWith("data:"))p.images[i]=await up(p.images[i],`img/${p.id}-${stamp}-${i+1}.jpg`);
+    }
+    status("Enregistrement des données…");
+    const cur=await gh("projects.json","GET");
+    await gh("projects.json","PUT",{message:"Mise à jour de la vitrine",content:u8b64(JSON.stringify(out,null,2)),sha:cur?cur.sha:undefined});
+    for(const path of toDelete){try{const f=await gh(path,"GET");if(f)await gh(path,"DELETE",{message:"Suppression "+path,sha:f.sha})}catch(e){}}
+    toDelete=[];draft=out;renderList();DATA=structuredClone(out);
+    status("Publié. Le site sera à jour dans 1 à 2 minutes.","ok");
+  }catch(e){status(e.message+"\nRien n’est perdu : corrige puis relance la publication.","err")}
+  btn.disabled=false;
+}
+function exportJson(){
+  const keep=structuredClone(draft);
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(keep,null,2)],{type:"application/json"}));
+  a.download="projects.json";a.click();
+  status("Fichier téléchargé. Les images ajoutées y sont intégrées en base64 : préfère « Publier ».");
+}
+
+loadPublic().then(route);
+</script>
+</body>
+</html>
