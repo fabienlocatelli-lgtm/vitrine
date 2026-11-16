@@ -40,6 +40,13 @@ button:disabled{opacity:.5;cursor:default}
 .tile:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--surface)}
 .thumb{aspect-ratio:16/10;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--muted);overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb.fit img{object-fit:contain}
+.facts{margin:16px 0 0;padding:0;display:grid;gap:6px;max-width:68ch}
+.facts div{display:flex;gap:8px;flex-wrap:wrap}
+.facts dt{color:var(--muted);margin:0}
+.facts dd{margin:0}
+.facts small{color:var(--muted)}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--text)}
 .tile .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
 .tile h2{margin:0;font-size:1.15rem}
 .tile p{margin:0;color:var(--muted);font-size:.95rem}
@@ -151,8 +158,14 @@ textarea{min-height:110px;resize:vertical}
       <div><label for="e-link">Lien vers le projet (optionnel)</label><input type="text" id="e-link" placeholder="https://…"></div>
       <div><label for="e-git">Lien vers le dépôt Git (optionnel)</label><input type="text" id="e-git" placeholder="https://github.com/…"></div>
     </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div><label for="e-ai">IA utilisée (optionnel)</label><input type="text" id="e-ai" placeholder="ex. Claude Sonnet 5.5"></div>
+      <div><label for="e-carbon">Bilan carbone en gCO2eq (optionnel, nombre)</label><input type="text" id="e-carbon" inputmode="decimal" placeholder="ex. 12,5"></div>
+    </div>
+    <label for="e-csrc">Méthode ou source du calcul (optionnel)</label><input type="text" id="e-csrc" placeholder="ex. estimation à partir du nombre de requêtes">
     <label for="e-prev">Image de la tuile</label>
     <input type="file" id="e-prev" accept="image/*">
+    <label class="chk"><input type="checkbox" id="e-fit"> Afficher l’image en entier (sans recadrage)</label>
     <div class="thumbs" id="e-prev-th"></div>
     <label for="e-imgs">Captures d’écran (plusieurs possibles)</label>
     <input type="file" id="e-imgs" accept="image/*" multiple>
@@ -216,7 +229,7 @@ function renderSite(){
   g.innerHTML=DATA.projects.map((p,i)=>{
     const im=safeImg(p.preview);
     return `<button type="button" class="tile" data-i="${i}">
-      <div class="thumb">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
+      <div class="thumb${p.fit?" fit":""}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
       <div class="body"><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p>
       <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div></button>`}).join("");
   g.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
@@ -230,6 +243,7 @@ function openModal(p,from){
     <h2 id="m-title">${esc(p.title)}</h2><p class="sum">${esc(p.summary)}</p>
     <div class="tags" style="margin:0 0 14px">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
     <div class="desc">${esc(p.description)}</div>
+    ${(p.ai||p.carbon)?`<dl class="facts">${p.ai?`<div><dt>IA utilisée :</dt><dd>${esc(p.ai)}</dd></div>`:""}${p.carbon?`<div><dt>Bilan carbone :</dt><dd>${esc(p.carbon)} gCO2eq${p.carbonSrc?` <small>(${esc(p.carbonSrc)})</small>`:""}</dd></div>`:""}</dl>`:""}
     ${shots?`<div class="shots">${shots}</div>`:""}
     <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}</div>`;
   $("#overlay").hidden=false;document.body.style.overflow="hidden";
@@ -296,10 +310,11 @@ function renderList(){
 function queueDelete(p){[p.preview,...(p.images||[])].forEach(u=>{if(u&&u.startsWith("img/"))toDelete.push(u)})}
 function startEdit(i){
   editing=i;
-  ed=i===null?{id:"",title:"",summary:"",description:"",tags:[],link:"",git:"",preview:"",images:[]}:structuredClone(draft.projects[i]);
+  ed=i===null?{id:"",title:"",summary:"",description:"",tags:[],link:"",git:"",preview:"",images:[],fit:false,ai:"",carbon:"",carbonSrc:""}:structuredClone(draft.projects[i]);
   $("#e-head").textContent=i===null?"Nouveau projet":"Modifier le projet";
   $("#e-title").value=ed.title;$("#e-sum").value=ed.summary;$("#e-desc").value=ed.description;
   $("#e-tags").value=(ed.tags||[]).join(", ");$("#e-link").value=ed.link||"";$("#e-git").value=ed.git||"";
+  $("#e-ai").value=ed.ai||"";$("#e-carbon").value=ed.carbon||"";$("#e-csrc").value=ed.carbonSrc||"";$("#e-fit").checked=!!ed.fit;
   renderThumbs();$("#editor").hidden=false;$("#editor").scrollIntoView({behavior:"smooth"});$("#e-title").focus();
 }
 function renderThumbs(){
@@ -317,6 +332,10 @@ function validateEdit(){
   ed.title=t;ed.summary=$("#e-sum").value.trim();ed.description=$("#e-desc").value.trim();
   ed.tags=$("#e-tags").value.split(",").map(x=>x.trim()).filter(Boolean);
   ed.link=$("#e-link").value.trim();ed.git=$("#e-git").value.trim();
+  ed.ai=$("#e-ai").value.trim();ed.carbonSrc=$("#e-csrc").value.trim();ed.fit=$("#e-fit").checked;
+  const cv=$("#e-carbon").value.trim().replace(",",".");
+  if(cv&&!isFinite(+cv)){alert("Le bilan carbone doit être un nombre (en gCO2eq).");return}
+  ed.carbon=cv?String(+cv).replace(".",","):"";
   if(!ed.id)ed.id=slug(t)+"-"+Date.now().toString(36);
   if(editing===null)draft.projects.push(ed);else draft.projects[editing]=ed;
   $("#editor").hidden=true;ed=null;renderList();
