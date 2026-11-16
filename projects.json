@@ -1,0 +1,43 @@
+{
+  "site": {
+    "title": "Mes projets créés en vibe-coding",
+    "tagline": "Un aperçu de ce que je construis avec l’aide de l’IA.",
+    "intro": "Voici la vitrine des applications / interface web que j'ai pu créé grâce à Mistral et/ou Claude via uniquement les tokens disponibles en version grand public gratuitement.",
+    "name": "Fabien Locatelli",
+    "role": "",
+    "linkedin": "www.linkedin.com/in/fabien-locatelli"
+  },
+  "projects": [
+    {
+      "id": "exemple-2",
+      "title": "Projet exemple 2",
+      "summary": "Une petite application web fictive, avec lien de démonstration.",
+      "description": "Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",
+      "tags": [
+        "web/html/css",
+        "javascript"
+      ],
+      "link": "https://example.com",
+      "git": "https://github.com/fabienlocatelli-lgtm/vitrine",
+      "preview": "",
+      "images": []
+    },
+    {
+      "id": "calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm",
+      "title": "Calcul du coût d'un trajet en voiture",
+      "summary": "Calculatrice et suivi de coût d'un trajet en voiture",
+      "description": "Il s'agit d'une calculatrice basée sur les informations implémentées par l'utilisateur. Les informations sont conservées localement sur l'ordinateur/mobile de l'utilisateur. Le coût d'un trajet comprend (1) le coût de l'essence calculé à partir d'une trace gpx (GPSlogger), d'une origine-destination ou simplement d'une distance et (2) le coût des charges d'une voiture lissé par km sur la base de l'année N-1. L'impact du dénivelé et de la météo sont pris en compte à partir de données open-source chargé en fonction du trajet. Aussi, le bilan carbone est dressé pour chaque trajet. Le profil du véhicule est personnalisable ainsi que le poids transporté.",
+      "tags": [
+        "web",
+        "html",
+        "js"
+      ],
+      "link": "https://fabienlocatelli-lgtm.github.io/CoutTrajet/",
+      "git": "https://github.com/fabienlocatelli-lgtm/CoutTrajet",
+      "preview": "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-apercu-mwjgc34b.jpg",
+      "images": [
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg"
+      ]
+    }
+  ]
+}
