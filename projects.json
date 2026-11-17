@@ -9,20 +9,6 @@
   },
   "projects": [
     {
-      "id": "exemple-2",
-      "title": "Projet exemple 2",
-      "summary": "Une petite application web fictive, avec lien de démonstration.",
-      "description": "Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",
-      "tags": [
-        "web/html/css",
-        "javascript"
-      ],
-      "link": "https://example.com",
-      "git": "https://github.com/fabienlocatelli-lgtm/vitrine",
-      "preview": "",
-      "images": []
-    },
-    {
       "id": "calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm",
       "title": "Calcul du coût d'un trajet en voiture",
       "summary": "Calculatrice et suivi de coût d'un trajet en voiture",
@@ -36,7 +22,8 @@
       "git": "https://github.com/fabienlocatelli-lgtm/CoutTrajet",
       "preview": "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-apercu-mwjgc34b.jpg",
       "images": [
-        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg"
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg",
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwkqymkv-2.jpg"
       ],
       "ai": "Mistral Vibe · modèle GLM 5.3",
       "carbonSrc": "cf. section Informations de l'application",
