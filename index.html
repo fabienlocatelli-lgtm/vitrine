@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vitrine : mes projets créés en vibe-coding</title>
+<title>Codé avec l’IA, pensé par moi</title>
 <meta name="description" content="Un aperçu des projets que j’ai créés avec l’aide de l’IA.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vitrine : mes projets créés en vibe-coding">
+<meta property="og:title" content="Codé avec l’IA, pensé par moi">
 <meta property="og:description" content="Un aperçu des projets que j’ai créés avec l’aide de l’IA.">
 <meta property="og:image" content="https://fabienlocatelli-lgtm.github.io/vitrine/og-image.png">
 <meta property="og:url" content="https://fabienlocatelli-lgtm.github.io/vitrine/">
@@ -21,7 +21,7 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",sy
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+header.top{display:flex;justify-content:flex-end;align-items:center;padding:18px 0}
 .brand{font-weight:600;letter-spacing:.01em;color:var(--muted)}
 button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:8px;text-decoration:none;display:inline-block}
 button:hover,.btn:hover{background:var(--surface2)}
@@ -34,7 +34,9 @@ button:disabled{opacity:.5;cursor:default}
 .hero h1{font-size:clamp(2rem,5.5vw,3.4rem);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em;font-weight:700}
 .hero .tagline{font-size:1.2rem;color:var(--muted);margin:0 0 22px}
 .hero .intro{margin:0 0 6px;max-width:62ch;white-space:pre-line}
-.hero .who{color:var(--muted);margin:0}
+.hero .who{color:var(--muted);margin:0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hero .who strong{color:var(--text)}
+footer p{margin:0 0 8px;max-width:80ch}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;padding-bottom:60px}
 .tile{display:flex;flex-direction:column;text-align:left;padding:0;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line);transition:border-color .15s,transform .15s}
 .tile:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--surface)}
@@ -88,13 +90,33 @@ textarea{min-height:110px;resize:vertical}
 .status.err{color:var(--danger)}.status.ok{color:var(--ok)}
 .hint{color:var(--muted);font-size:.85rem;margin:6px 0 0}
 [hidden]{display:none!important}
+
+.car{margin:14px 0 18px}
+.stage{position:relative;background:var(--surface2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:180px}
+.stage>img{display:block;max-width:100%;max-height:58vh;width:auto;object-fit:contain;cursor:zoom-in}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;padding:0;border-radius:50%;font-size:26px;line-height:1;background:rgba(10,12,16,.62);color:#fff;border-color:transparent}
+.nav:hover{background:rgba(10,12,16,.85)}
+.nav.prev{left:10px}.nav.next{right:10px}
+.zoom{position:absolute;top:10px;right:10px;width:36px;height:36px;padding:0;border-radius:8px;background:rgba(10,12,16,.62);color:#fff;border-color:transparent}
+.cnt{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
+.mini{display:flex;gap:8px;overflow-x:auto;padding:8px 2px}
+.mini button{flex:0 0 auto;padding:0;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.65;background:none}
+.mini button.on{border-color:var(--accent);opacity:1}
+.mini img{height:56px;display:block}
+.like{margin-left:auto}
+.like.liked{border-color:var(--accent);color:var(--accent)}
+.likec{color:var(--muted);font-size:.85rem}
+.overlay.lb{z-index:40;align-items:center;background:rgba(0,0,0,.93);padding:0}
+.lb img{max-width:94vw;max-height:88vh;object-fit:contain}
+.lb .nav{background:rgba(255,255,255,.14)}
+.lb .lbc{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:42px;height:42px;padding:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;border-color:transparent}
+.lb .cnt{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:0;right:0;color:#ddd}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
-  <span class="brand" id="brand">Vitrine</span>
   <button id="theme" type="button" aria-label="Changer de thème">☀</button>
 </header>
 
@@ -140,6 +162,10 @@ textarea{min-height:110px;resize:vertical}
       <div><label for="s-role">Rôle (optionnel)</label><input type="text" id="s-role"></div>
       <div><label for="s-linkedin">Lien LinkedIn</label><input type="text" id="s-linkedin" placeholder="https://www.linkedin.com/in/…"></div>
     </div>
+    <div class="cols" style="grid-template-columns:1fr 1fr">
+      <div><label for="s-pageai">IA utilisée pour créer la page (pied de page)</label><input type="text" id="s-pageai"></div>
+      <div><label for="s-req">Requêtes IA pour créer la page (estimation haute)</label><input type="text" id="s-req" inputmode="numeric"></div>
+    </div>
   </div>
 
   <div class="card">
@@ -178,7 +204,7 @@ textarea{min-height:110px;resize:vertical}
 
   <div class="card">
     <h3>4. Publier</h3>
-    <p class="hint" style="margin:0 0 10px">Les images sont réduites automatiquement. Après la publication, le site se met à jour en 1 à 2 minutes.</p>
+    <p class="hint" style="margin:0 0 10px">Les images sont réduites automatiquement. Le bouton Publier se débloque une fois les données chargées (étape 1), pour ne rien écraser. Après la publication, le site se met à jour en 1 à 2 minutes.</p>
     <div class="row">
       <button type="button" id="publish" class="primary">Publier sur GitHub</button>
       <button type="button" id="export">Télécharger projects.json (secours)</button>
@@ -192,10 +218,18 @@ textarea{min-height:110px;resize:vertical}
 
 <div class="overlay" id="overlay" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" id="modal"></div></div>
 
+<div class="overlay lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Image en plein écran">
+  <button type="button" class="lbc" id="lb-close" aria-label="Fermer">✕</button>
+  <button type="button" class="nav prev" id="lb-prev" aria-label="Image précédente">‹</button>
+  <img id="lb-img" alt="">
+  <button type="button" class="nav next" id="lb-next" aria-label="Image suivante">›</button>
+  <div class="cnt" id="lb-cnt"></div>
+</div>
+
 <script>
 /* Données de repli : utilisées tant que projects.json n’existe pas dans le dépôt. */
 const DEFAULT={
-  site:{title:"Mes projets créés en vibe-coding",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:""},
+  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:38},
   projects:[
     {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
     {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
@@ -203,7 +237,7 @@ const DEFAULT={
 };
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+const safeUrl=u=>{u=(u||"").trim();if(/^https?:\/\//i.test(u))return u;return /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(u)?"https://"+u:""};
 const safeImg=u=>/^(img\/|https:\/\/|data:image\/)/i.test(u||"")?u:"";
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 let DATA=structuredClone(DEFAULT);
@@ -217,13 +251,12 @@ setTheme(store.get("vit_theme")==="light"?"light":"dark");
 function renderSite(){
   const s=DATA.site;
   document.title=s.title||"Vitrine";
-  $("#brand").textContent=s.name||"Vitrine";
   $("#h-title").textContent=s.title||"";
   $("#h-tag").textContent=s.tagline||"";
   $("#h-intro").textContent=s.intro||"";
-  $("#h-who").textContent=[s.name,s.role].filter(Boolean).join(", ");
   const li=safeUrl(s.linkedin);
-  $("#f-links").innerHTML=li?`<a href="${esc(li)}" target="_blank" rel="noopener noreferrer">Me retrouver sur LinkedIn</a>`:"";
+  $("#h-who").innerHTML=`<span><strong>${esc(s.name||"")}</strong>${s.role?", "+esc(s.role):""}</span>`+(li?`<a class="btn" href="${esc(li)}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`:"");
+  renderFooter(s);
   const g=$("#grid");
   if(!DATA.projects.length){g.innerHTML='<p class="empty">Aucun projet pour l’instant.</p>';return}
   g.innerHTML=DATA.projects.map((p,i)=>{
@@ -231,32 +264,83 @@ function renderSite(){
     return `<button type="button" class="tile" data-i="${i}">
       <div class="thumb${p.fit?" fit":""}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
       <div class="body"><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p>
-      <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div></div></button>`}).join("");
+      <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div><span class="likec" data-lc="${esc(p.id)}"></span></div></button>`}).join("");
   g.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
+  paintLikes();
 }
-let lastFocus=null;
+let lastFocus=null,CAR={imgs:[],i:0,title:""},curPid=null;
 function openModal(p,from){
-  lastFocus=from;
-  const shots=(p.images||[]).map(safeImg).filter(Boolean).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer"><img src="${esc(u)}" alt="Capture d’écran de ${esc(p.title)}" loading="lazy"></a>`).join("");
+  lastFocus=from;curPid=p.id;
+  const imgs=(p.images||[]).map(safeImg).filter(Boolean),multi=imgs.length>1;
+  CAR={imgs,i:0,title:p.title||""};
   const l=safeUrl(p.link),g=safeUrl(p.git);
+  const car=imgs.length?`<div class="car" aria-roledescription="carrousel" aria-label="Captures d’écran">
+    <div class="stage">${multi?'<button type="button" class="nav prev" aria-label="Image précédente">‹</button>':""}
+      <img id="c-img" alt="" src="">
+      ${multi?'<button type="button" class="nav next" aria-label="Image suivante">›</button>':""}
+      <button type="button" class="zoom" aria-label="Voir en plein écran">⤢</button></div>
+    ${multi?`<div class="cnt" id="c-cnt" aria-live="polite"></div><div class="mini">${imgs.map((u,i)=>`<button type="button" data-i="${i}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>`:""}</div>`:"";
   $("#modal").innerHTML=`<button type="button" class="close" aria-label="Fermer">✕</button>
     <h2 id="m-title">${esc(p.title)}</h2><p class="sum">${esc(p.summary)}</p>
-    <div class="tags" style="margin:0 0 14px">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    <div class="tags" style="margin:0 0 4px">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+    ${car}
     <div class="desc">${esc(p.description)}</div>
     ${(p.ai||p.carbon)?`<dl class="facts">${p.ai?`<div><dt>IA utilisée :</dt><dd>${esc(p.ai)}</dd></div>`:""}${p.carbon?`<div><dt>Bilan carbone :</dt><dd>${esc(p.carbon)} gCO2eq${p.carbonSrc?` <small>(${esc(p.carbonSrc)})</small>`:""}</dd></div>`:""}</dl>`:""}
-    ${shots?`<div class="shots">${shots}</div>`:""}
-    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}</div>`;
+    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}<button type="button" class="like" id="m-like" hidden aria-pressed="false"></button></div>`;
   $("#overlay").hidden=false;document.body.style.overflow="hidden";
-  $("#modal .close").onclick=closeModal;$("#modal .close").focus();
+  const m=$("#modal");m.querySelector(".close").onclick=closeModal;
+  if(imgs.length){carSet(0);m.querySelector(".zoom").onclick=lbOpen;m.querySelector("#c-img").onclick=lbOpen;
+    if(multi){m.querySelector(".prev").onclick=()=>carGo(-1);m.querySelector(".next").onclick=()=>carGo(1);
+      m.querySelectorAll(".mini button").forEach(b=>b.onclick=()=>carSet(+b.dataset.i));swipe(m.querySelector(".stage"),carGo)}}
+  m.querySelector("#m-like").onclick=onLike;paintModalLike();
+  m.querySelector(".close").focus();
 }
+function carSet(i){const n=CAR.imgs.length;if(!n)return;CAR.i=(i+n)%n;
+  const im=$("#c-img");if(im){im.src=CAR.imgs[CAR.i];im.alt=`Capture d’écran ${CAR.i+1} sur ${n} : ${CAR.title}`}
+  const c=$("#c-cnt");if(c)c.textContent=`${CAR.i+1} / ${n}`;
+  document.querySelectorAll(".mini button").forEach((b,k)=>b.classList.toggle("on",k===CAR.i));
+  if(!$("#lb").hidden)lbPaint()}
+function carGo(d){if(CAR.imgs.length>1)carSet(CAR.i+d)}
+function swipe(el,cb){let x=null;el.addEventListener("touchstart",e=>{x=e.touches[0].clientX},{passive:true});
+  el.addEventListener("touchend",e=>{if(x===null)return;const d=e.changedTouches[0].clientX-x;x=null;if(Math.abs(d)>40)cb(d<0?1:-1)})}
+function lbPaint(){const n=CAR.imgs.length,im=$("#lb-img");im.src=CAR.imgs[CAR.i];im.alt=`Capture d’écran ${CAR.i+1} sur ${n} : ${CAR.title}`;
+  $("#lb-cnt").textContent=n>1?`${CAR.i+1} / ${n}`:"";$("#lb-prev").hidden=$("#lb-next").hidden=n<2}
+function lbOpen(){$("#lb").hidden=false;lbPaint();$("#lb-close").focus()}
+function lbClose(){$("#lb").hidden=true;const z=document.querySelector("#modal .zoom");if(z)z.focus()}
+$("#lb-close").onclick=lbClose;$("#lb-prev").onclick=()=>carGo(-1);$("#lb-next").onclick=()=>carGo(1);
+$("#lb").onclick=e=>{if(e.target.id==="lb")lbClose()};swipe($("#lb"),carGo);
+
+/* Likes (Firebase) */
+let LK={counts:{},mine:new Set(),on:false},dataReady=false;
+async function likesLoad(){if(!dataReady||!window.vitLikes)return;
+  try{const r=await window.vitLikes.load(DATA.projects.map(p=>p.id));LK.counts=r.counts;LK.mine=new Set(r.mine);LK.on=true;paintLikes()}catch(e){}}
+addEventListener("vit-likes-ready",likesLoad);
+function paintLikes(){document.querySelectorAll("[data-lc]").forEach(el=>{const n=LK.counts[el.dataset.lc];el.textContent=n==null?"":"♥ "+n});paintModalLike()}
+function paintModalLike(){const b=$("#m-like");if(!b)return;b.hidden=!LK.on;if(!LK.on)return;
+  const on=LK.mine.has(curPid),n=LK.counts[curPid];b.setAttribute("aria-pressed",String(on));
+  b.textContent=(on?"♥ ":"♡ ")+"J’aime"+(n!=null?" · "+n:"");b.classList.toggle("liked",on)}
+async function onLike(e){const b=e.currentTarget,pid=curPid,was=LK.mine.has(pid);b.disabled=true;
+  try{await window.vitLikes.toggle(pid,was);was?LK.mine.delete(pid):LK.mine.add(pid);LK.counts[pid]=Math.max(0,(LK.counts[pid]||0)+(was?-1:1));b.title=""}
+  catch(err){b.title="Impossible d’enregistrer ce like pour le moment."}
+  b.disabled=false;paintLikes()}
+
+/* Pied de page */
+function renderFooter(s){
+  const n=Number(String(s.requests||"").replace(",","."));
+  let h=`<p>Page créée avec ${esc(s.pageAi||"une IA")}. Code sous <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">licence Apache 2.0</a>.</p>`;
+  if(n>0){const e=n*0.047/1000,kg=e*0.0461,f=x=>x.toLocaleString("fr-FR",{maximumSignificantDigits:3});
+    h+=`<p>Bilan carbone estimé de la création de cette page : ${f(kg*1000)} gCO₂e. Calcul : E = ${f(n)} requêtes × 0,047 kWh / 1000 requêtes = ${f(e)} kWh, puis ${f(e)} kWh × 0,0461 kgCO₂e/kWh = ${f(kg)} kgCO₂e. Estimation haute, avec une marge pour la longueur du contexte de la conversation.</p>`}
+  $("#f-links").innerHTML=h}
 function closeModal(){$("#overlay").hidden=true;document.body.style.overflow="";if(lastFocus)lastFocus.focus()}
 $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal()};
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#overlay").hidden)closeModal()});
+document.addEventListener("keydown",e=>{
+  if(!$("#lb").hidden){if(e.key==="Escape")lbClose();else if(e.key==="ArrowLeft")carGo(-1);else if(e.key==="ArrowRight")carGo(1);return}
+  if(!$("#overlay").hidden){if(e.key==="Escape")closeModal();else if(e.key==="ArrowLeft")carGo(-1);else if(e.key==="ArrowRight")carGo(1)}});
 
 /* Chargement */
 async function loadPublic(){
   try{const r=await fetch("projects.json?"+Date.now());if(r.ok){const d=await r.json();if(d&&Array.isArray(d.projects))DATA={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects}}}catch(e){}
-  renderSite();
+  renderSite();dataReady=true;likesLoad();
 }
 
 /* Routage #admin */
@@ -285,10 +369,10 @@ function initAdmin(){
   $("#e-cancel").onclick=()=>{$("#editor").hidden=true;ed=null};
   $("#e-prev").onchange=async e=>{const f=e.target.files[0];if(f){ed.preview=await compress(f,900,.82);renderThumbs()}e.target.value=""};
   $("#e-imgs").onchange=async e=>{for(const f of e.target.files)ed.images.push(await compress(f,1600,.82));renderThumbs();e.target.value=""};
-  $("#publish").onclick=publish;
+  $("#publish").onclick=publish;$("#publish").disabled=true;
   $("#export").onclick=exportJson;
 }
-const siteMap={title:"#s-title",tagline:"#s-tag",intro:"#s-intro",name:"#s-name",role:"#s-role",linkedin:"#s-linkedin"};
+const siteMap={title:"#s-title",tagline:"#s-tag",intro:"#s-intro",name:"#s-name",role:"#s-role",linkedin:"#s-linkedin",pageAi:"#s-pageai",requests:"#s-req"};
 function bindSite(){for(const k in siteMap){const el=$(siteMap[k]);el.value=draft.site[k]||"";el.oninput=()=>{draft.site[k]=el.value}}}
 function renderList(){
   const ul=$("#plist");
@@ -367,7 +451,7 @@ async function loadFromGitHub(){
     const f=await gh("projects.json","GET");
     if(f){const d=JSON.parse(b64u8(f.content));draft={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects||[]};status("Données chargées depuis GitHub.","ok")}
     else{status("Pas encore de projects.json dans le dépôt : l’exemple par défaut est conservé. Il sera créé à la première publication.","ok")}
-    toDelete=[];bindSite();renderList();
+    toDelete=[];bindSite();renderList();$("#publish").disabled=false;
   }catch(e){status(e.message,"err")}
 }
 async function publish(){
@@ -398,6 +482,38 @@ function exportJson(){
 }
 
 loadPublic().then(route);
+</script>
+<script type="module">
+/* Likes uniques : Firebase (authentification anonyme + Firestore). Cette configuration est publique par conception. */
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,query,where,getCountFromServer,getDocs,doc,setDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyBUNvDZvRdNkbwWKzMYDkwIaKN_djaKhlM",
+  authDomain:"vitrine-7d85a.firebaseapp.com",
+  projectId:"vitrine-7d85a",
+  storageBucket:"vitrine-7d85a.firebasestorage.app",
+  messagingSenderId:"782893553411",
+  appId:"1:782893553411:web:ea21b41abd958e5ab73b36"
+});
+const auth=getAuth(app),db=getFirestore(app),col=collection(db,"likes");
+let uid=null;
+const first=new Promise(r=>onAuthStateChanged(auth,u=>{uid=u?u.uid:uid;r(u?u.uid:null)}));
+window.vitLikes={
+  async load(ids){
+    const counts={};
+    await Promise.all(ids.map(async id=>{try{counts[id]=(await getCountFromServer(query(col,where("pid","==",id)))).data().count}catch(e){counts[id]=null}}));
+    const u=await first;let mine=[];
+    if(u){try{mine=(await getDocs(query(col,where("uid","==",u)))).docs.map(d=>d.data().pid)}catch(e){}}
+    return {counts,mine};
+  },
+  async toggle(pid,liked){
+    if(!uid)uid=(await signInAnonymously(auth)).user.uid;
+    const ref=doc(db,"likes",pid+"_"+uid);
+    if(liked)await deleteDoc(ref);else await setDoc(ref,{pid,uid});
+  }
+};
+window.dispatchEvent(new Event("vit-likes-ready"));
 </script>
 </body>
 </html>
