@@ -5,7 +5,9 @@
     "intro": "Voici la vitrine des applications / interface web que j'ai pu créé grâce à Mistral et/ou Claude via uniquement les tokens disponibles en version grand public gratuitement. Pour une utilisation de l'IA sobre et raisonnée.",
     "name": "Fabien Locatelli",
     "role": "",
-    "linkedin": "https://www.linkedin.com/in/fabien-locatelli"
+    "linkedin": "https://www.linkedin.com/in/fabien-locatelli",
+    "pageAi": "Claude Sonnet 5.5 (Anthropic)",
+    "requests": 38
   },
   "projects": [
     {
