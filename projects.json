@@ -34,7 +34,7 @@
       "id": "recherche-double-financement-mwkw2afr",
       "title": "Recherche double financement",
       "summary": "Recherche automatisée avec captures d'écran de subventions",
-      "description": "Recherche automatisée avec captures d'écran horodatées de subventions sur plusieurs sites afin de contrôler les éventuels doubles financements. Les sites disponibles pour les recherches sont les suivants :\n- https://aides-territoires.beta.gouv.fr/projets/projets-subventionnes/\n- https://datasubvention.beta.gouv.fr/\n- https://ec.europa.eu/budget/financial-transparency-system/analysis.html\n- https://kohesio.ec.europa.eu/fr/b%C3%A9n%C3%A9ficiaires",
+      "description": "Recherche automatisée avec captures d'écran horodatées de subventions sur plusieurs sites afin de contrôler les éventuels doubles financements. Les sites disponibles pour les recherches sont les suivants :\n- https://aides-territoires.beta.gouv.fr/projets/projets-subventionnes/\n- https://datasubvention.beta.gouv.fr/\n- https://ec.europa.eu/budget/financial-transparency-system/analysis.html\n- https://kohesio.ec.europa.eu/fr/b%C3%A9n%C3%A9ficiaires\n\nCode source sur demande.",
       "tags": [
         "python",
         "vs code",
@@ -47,12 +47,14 @@
         "img/recherche-double-financement-mwkw2afr-mwkw2cnl-1.jpg",
         "img/recherche-double-financement-mwkw2afr-mwkw2cnl-2.jpg",
         "img/recherche-double-financement-mwkw2afr-mwkw2cnl-3.jpg",
-        "img/recherche-double-financement-mwkw2afr-mwkw2cnl-4.jpg"
+        "img/recherche-double-financement-mwkw2afr-mwkw2cnl-4.jpg",
+        "img/recherche-double-financement-mwkw2afr-mwkwbjmi-5.jpg",
+        "img/recherche-double-financement-mwkw2afr-mwkwbjmi-6.jpg"
       ],
       "fit": false,
       "ai": "Copilot",
-      "carbon": "",
-      "carbonSrc": ""
+      "carbon": "0,22",
+      "carbonSrc": "\"E = requêtes × 0,047 kWh/1000 requêtes\" puis \"E × 0,0461 kgCO₂e/kWh\" avec une base de 100 requêtes environ"
     }
   ]
 }
