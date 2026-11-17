@@ -57,6 +57,25 @@
       "ai": "Copilot",
       "carbon": "0,22",
       "carbonSrc": "\"E = requêtes × 0,047 kWh/1000 requêtes\" puis \"E × 0,0461 kgCO₂e/kWh\" avec une base de 100 requêtes environ"
+    },
+    {
+      "id": "upload-organise-vers-un-cloud-mwl9fc3i",
+      "title": "Upload organisé vers un cloud",
+      "summary": "Upload organisé depuis serveur vers xloud type Alfresco",
+      "description": "Il s'agit d'une application permettant l'upload depuis un serveur Windows vers un cloud type Alfresco régulier de dossiers comportant des fichiers ordonnés selon une arborescence donnée, en les renommant et en complément une checklist Excel. Une extraction PDF des pièces manquantes est possible.\n\nAvantages :\n* Gestion d'upload de plusieurs fichiers en parallèle (20 par exemple) avec une ouverture de sessions multiples ;\n* Gain de temps significatif pour l'archivage des dossiers vers le cloud ;\n* Rapport d'erreur sur les fichiers non uploadés ;\n* Dézippage des zip et recomposition par dossier identiques sur le cloud ;\n* Uniformisation du renommage et du choix des pièces.",
+      "tags": [
+        "python",
+        "cloud",
+        "Alfresco"
+      ],
+      "link": "",
+      "git": "",
+      "preview": "",
+      "images": [],
+      "fit": false,
+      "ai": "",
+      "carbon": "",
+      "carbonSrc": ""
     }
   ]
 }
