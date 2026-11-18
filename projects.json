@@ -36,13 +36,14 @@
     {
       "id": "recherche-double-financement-mwkw2afr",
       "title": "Recherche double financement",
-      "summary": "Recherche automatisée avec captures d'écran de subventions",
+      "summary": "Recherche de subventions automatisée avec captures d'écran horodatées",
       "description": "Recherche automatisée avec captures d'écran horodatées de subventions sur plusieurs sites afin de contrôler les éventuels doubles financements. Les sites disponibles pour les recherches sont les suivants :\n- https://aides-territoires.beta.gouv.fr/projets/projets-subventionnes/\n- https://datasubvention.beta.gouv.fr/\n- https://ec.europa.eu/budget/financial-transparency-system/analysis.html\n- https://kohesio.ec.europa.eu/fr/b%C3%A9n%C3%A9ficiaires\n\nCode source sur demande.",
       "tags": [
         "python",
         "vs code",
         "copilot",
-        "automatisation"
+        "automatisation",
+        "subvention"
       ],
       "link": "",
       "git": "",
