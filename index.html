@@ -403,6 +403,174 @@ function moveEditor(m){MODE=m;if(m==="contrib")$("#c-slot").appendChild($("#edit
   $("#editor").hidden=true;$("#e-ok").textContent=m==="contrib"?"Envoyer pour validation":"Valider le projet"}
 function initEditor(){
   if(edInit)return;edInit=true;
+  $("#e-ok").onclick=validateEdit;
+  $("#e-cancel").onclick=()=>{$("#editor").hidden=true;ed=null};
+  const cap=()=>MODE==="contrib"?680000:Infinity;
+  const okFile=f=>{if(f.size>8*1024*1024){alert("« "+f.name+" » dépasse 8 Mo : fichier ignoré.");return false}return true};
+  $("#e-prev").onchange=async e=>{const f=e.target.files[0];
+    try{if(f&&okFile(f)){ed.preview=await compress(f,MODE==="contrib"?1000:900,.82,cap());renderThumbs()}}catch(x){alert(x.message)}e.target.value=""};
+  $("#e-imgs").onchange=async e=>{
+    for(const f of e.target.files){
+      if(MODE==="contrib"&&ed.images.length>=10){alert("10 captures maximum.");break}
+      if(!okFile(f))continue;
+      try{ed.images.push(await compress(f,MODE==="contrib"?1400:1600,.82,cap()))}catch(x){alert(x.message)}}
+    renderThumbs();e.target.value=""};
+}
+function openEditor(obj,head){
+  ed=obj;ed.images=ed.images||[];$("#e-head").textContent=head;
+  $("#e-title").value=ed.title||"";$("#e-sum").value=ed.summary||"";$("#e-desc").value=ed.description||"";
+  $("#e-tags").value=(ed.tags||[]).join(", ");$("#e-link").value=ed.link||"";$("#e-git").value=ed.git||"";
+  $("#e-ai").value=ed.ai||"";$("#e-carbon").value=ed.carbon||"";$("#e-csrc").value=ed.carbonSrc||"";$("#e-fit").checked=!!ed.fit;
+  renderThumbs();$("#editor").hidden=false;$("#editor").scrollIntoView({behavior:"smooth"});$("#e-title").focus();
+}
+
+/* Contribution (visiteur connecté) */
+function cStatus(m,t){const s=$("#c-status");s.textContent=m;s.className="status "+(t||"")}
+function initContrib(){
+  initEditor();moveEditor("contrib");
+  if(!window.vitSubs){cStatus("Connexion indisponible pour le moment. Recharge la page.","err");return}
+  cStatus("");
+  if(!cBound){cBound=true;
+    $("#c-google").onclick=async()=>{try{await window.vitSubs.signIn()}catch(e){cStatus("Connexion impossible : "+(e.code||e.message),"err")}};
+    $("#c-out").onclick=()=>window.vitSubs.signOut();
+    $("#c-new").onclick=()=>cEdit(null);
+    window.vitSubs.onUser(u=>{CU=u;cRender()})}
+}
+async function cRender(){
+  const ok=CU&&!CU.isAnonymous;
+  $("#c-login").hidden=!!ok;$("#c-panel").hidden=!ok;
+  if(!ok){$("#editor").hidden=true;return}
+  $("#c-who").textContent="Connecté : "+CU.name;
+  try{CSUBS=await window.vitSubs.mine()}catch(e){cStatus("Lecture impossible : "+(e.code||e.message),"err");CSUBS=[]}
+  cList();
+}
+const cFreeSlot=()=>{for(let n=1;n<=5;n++)if(!CSUBS.some(s=>s.id===CU.uid+"_"+n))return n;return 0};
+function cList(){
+  const ul=$("#c-list");
+  ul.innerHTML=CSUBS.length?CSUBS.map(s=>{
+    let b=ST[s.status]||s.status;
+    if(s.status==="pending"&&s.publishedId)b="Modification en attente (la version publiée reste en ligne)";
+    if(s.removalRequested)b+=" · retrait demandé";
+    if(s.status==="rejected"&&s.rejectNote)b+=" : "+s.rejectNote;
+    return `<li><span class="t">${esc(s.title)}</span><span class="badge">${esc(b)}</span>
+      <button type="button" data-a="edit" data-id="${esc(s.id)}">Modifier</button>
+      ${s.publishedId?(s.removalRequested?"":`<button type="button" class="danger" data-a="rm" data-id="${esc(s.id)}">Demander le retrait</button>`):`<button type="button" class="danger" data-a="del" data-id="${esc(s.id)}">Supprimer</button>`}</li>`}).join(""):'<li class="hint">Aucun projet envoyé pour l’instant.</li>';
+  ul.querySelectorAll("button").forEach(b=>b.onclick=()=>cAct(b.dataset.a,b.dataset.id));
+  const free=cFreeSlot();$("#c-new").disabled=!free;$("#c-limit").textContent=free?`${CSUBS.length} / 5 projets`:"Limite de 5 projets atteinte.";
+}
+async function cAct(a,id){
+  const s=CSUBS.find(x=>x.id===id);if(!s)return;
+  try{
+    if(a==="edit")return await cEdit(s);
+    if(a==="del"){if(!confirm("Supprimer « "+s.title+" » ?"))return;await window.vitSubs.remove(id);cStatus("Projet supprimé.","ok")}
+    if(a==="rm"){if(!confirm("Demander le retrait de « "+s.title+" » du site ?"))return;await window.vitSubs.requestRemoval(id);cStatus("Demande de retrait envoyée.","ok")}
+    await cRender();
+  }catch(e){cStatus("Action impossible : "+(e.code||e.message),"err")}
+}
+async function cEdit(s){
+  try{
+    let obj;
+    if(s){cStatus("Chargement des images…");
+      const imgs=await window.vitSubs.images(s.id),pv=imgs.find(x=>x.kind==="preview"),sh=imgs.filter(x=>x.kind==="shot").sort((a,b)=>a.order-b.order);
+      obj={title:s.title,summary:s.summary,description:s.description,tags:s.tags||[],link:s.link,git:s.git,ai:s.ai,carbon:s.carbon,carbonSrc:s.carbonSrc,fit:!!s.fit,preview:pv?pv.data:"",images:sh.map(x=>x.data)};
+      CEDIT={id:s.id,isNew:false};cStatus("")}
+    else{const n=cFreeSlot();if(!n)return;
+      obj={title:"",summary:"",description:"",tags:[],link:"",git:"",ai:"",carbon:"",carbonSrc:"",fit:false,preview:"",images:[]};CEDIT={id:CU.uid+"_"+n,isNew:true}}
+    openEditor(obj,s?"Modifier mon projet":"Nouveau projet");
+  }catch(e){cStatus("Chargement impossible : "+(e.code||e.message),"err")}
+}
+async function contribSave(){
+  if(ed.title.length>120||ed.summary.length>300||ed.description.length>5000){alert("Textes trop longs : titre 120, aperçu 300, description 5000 caractères maximum.");return}
+  const btn=$("#e-ok");btn.disabled=true;cStatus("Envoi en cours…");
+  try{
+    const f={title:ed.title,summary:ed.summary,description:ed.description,tags:ed.tags.slice(0,8),link:ed.link,git:ed.git,ai:ed.ai,carbon:ed.carbon,carbonSrc:ed.carbonSrc,fit:ed.fit,nImages:ed.images.length,hasPreview:!!ed.preview};
+    await window.vitSubs.save(CEDIT.id,CEDIT.isNew,f,ed.preview,ed.images);
+    $("#editor").hidden=true;ed=null;cStatus("Projet envoyé. Il sera visible après validation.","ok");await cRender();
+  }catch(e){cStatus("Envoi impossible : "+(e.code||e.message)+"\nVérifie les limites (textes, images) puis réessaie.","err")}
+  btn.disabled=false;
+}
+
+/* Validation (administrateur) */
+function initAdminSubs(){
+  if(!window.vitSubs){$("#a-msg").textContent="Firebase indisponible : recharge la page.";return}
+  if(aBound)return;aBound=true;
+  $("#a-google").onclick=async()=>{try{await window.vitSubs.signIn()}catch(e){$("#a-msg").textContent="Connexion impossible : "+(e.code||e.message)}};
+  $("#a-refresh").onclick=aLoad;
+  window.vitSubs.onUser(u=>{AU=u;aRender()});
+}
+async function aRender(){
+  const ok=AU&&!AU.isAnonymous;
+  $("#a-google").hidden=!!ok;$("#a-refresh").hidden=!ok;
+  $("#a-who").textContent=ok?`Connecté : ${AU.name}. Ton identifiant (uid) : ${AU.uid}`:"Connecte-toi avec le compte Google que tu utilises comme administrateur.";
+  if(ok)await aLoad();else{ASUBS=[];aList()}
+}
+async function aLoad(){
+  $("#a-msg").textContent="Chargement…";
+  try{ASUBS=await window.vitSubs.adminList();$("#a-msg").textContent=ASUBS.length?"":"Aucune soumission."}
+  catch(e){ASUBS=[];$("#a-msg").textContent=e.code==="permission-denied"?"Accès refusé : colle ton uid dans les règles Firestore, publie-les, puis actualise.":"Erreur : "+(e.code||e.message)}
+  aList();
+}
+function aList(){
+  const L=[...ASUBS].sort((a,b)=>(b.status==="pending")-(a.status==="pending")||(b.updatedAt||0)-(a.updatedAt||0));
+  const n=ASUBS.filter(x=>x.status==="pending").length;$("#a-count").textContent=n?`(${n} à valider)`:"";
+  $("#a-list").innerHTML=L.map(x=>`<li data-id="${esc(x.id)}"><span class="t">${esc(x.title)} <small class="hint">par ${esc(x.ownerName)}</small></span><span class="badge">${esc((ST[x.status]||x.status)+(x.removalRequested?" · retrait demandé":""))}</span>
+    <button type="button" data-a="view">Aperçu</button>
+    ${x.status==="pending"?'<button type="button" class="primary" data-a="ok">Accepter</button><button type="button" data-a="no">Refuser</button>':""}
+    ${x.publishedId?'<button type="button" class="danger" data-a="rm">Retirer du site</button>':'<button type="button" class="danger" data-a="del">Supprimer</button>'}
+    <div class="det" hidden style="flex-basis:100%"></div></li>`).join("");
+  $("#a-list").querySelectorAll("button").forEach(b=>b.onclick=()=>aAct(b.dataset.a,b.closest("li")));
+}
+async function aAct(a,li){
+  const x=ASUBS.find(v=>v.id===li.dataset.id);if(!x)return;
+  try{
+    if(a==="view")return await aView(x,li.querySelector(".det"));
+    if(a==="ok")return await approveSub(x);
+    if(a==="rm")return await removeSub(x);
+    if(a==="no"){const note=prompt("Motif du refus (visible par le contributeur) :","");if(note===null)return;await window.vitSubs.adminSet(x.id,{status:"rejected",rejectNote:note.slice(0,300)})}
+    if(a==="del"){if(!confirm("Supprimer définitivement cette soumission ?"))return;await window.vitSubs.remove(x.id)}
+    await aLoad();
+  }catch(e){status("Action impossible : "+(e.code||e.message),"err")}
+}
+async function aView(x,det){
+  if(!det.hidden){det.hidden=true;return}
+  det.hidden=false;det.textContent="Chargement…";
+  const imgs=(await window.vitSubs.images(x.id)).sort((a,b)=>a.order-b.order).filter(m=>/^data:image\//.test(m.data||""));
+  det.innerHTML=`<p>${esc(x.summary)}</p><p style="white-space:pre-line">${esc(x.description)}</p><p class="hint">Étiquettes : ${esc((x.tags||[]).join(", "))}<br>Lien : ${esc(x.link||"–")}<br>Git : ${esc(x.git||"–")}<br>IA : ${esc(x.ai||"–")} · Carbone : ${esc(x.carbon||"–")} gCO2eq ${esc(x.carbonSrc||"")}</p><div class="thumbs">${imgs.map(m=>`<img src="${esc(m.data)}" alt="">`).join("")}</div>`;
+}
+async function approveSub(x){
+  if(!GHLOADED){alert("Charge d’abord les données du site (étape 1).");return}
+  status("Préparation…");
+  const imgs=await window.vitSubs.images(x.id),pv=imgs.find(m=>m.kind==="preview"),sh=imgs.filter(m=>m.kind==="shot").sort((a,b)=>a.order-b.order);
+  const all=[...(pv?[pv]:[]),...sh];
+  if(all.some(m=>!/^data:image\/jpeg;base64,/.test(m.data||""))){alert("Une image n’est pas un JPEG valide : refuse ou demande au contributeur de la renvoyer.");return}
+  const pid=x.publishedId||"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const proj={id:pid,title:x.title,summary:x.summary,description:x.description,tags:x.tags||[],link:x.link||"",git:x.git||"",ai:x.ai||"",carbon:x.carbon||"",carbonSrc:x.carbonSrc||"",fit:!!x.fit,community:true,author:x.ownerName,preview:pv?pv.data:"",images:sh.map(m=>m.data)};
+  const k=draft.projects.findIndex(p=>p.id===pid);
+  if(k>=0){queueDelete(draft.projects[k]);draft.projects[k]=proj}else draft.projects.push(proj);
+  renderList();
+  if(await publish()){await window.vitSubs.adminSet(x.id,{status:"published",publishedId:pid,rejectNote:"",removalRequested:false});await aLoad()}
+}
+async function removeSub(x){
+  if(!GHLOADED){alert("Charge d’abord les données du site (étape 1).");return}
+  if(!confirm("Retirer « "+x.title+" » du site ?"))return;
+  const k=draft.projects.findIndex(p=>p.id===x.publishedId);
+  if(k>=0){queueDelete(draft.projects[k]);draft.projects.splice(k,1);renderList()}
+  if(await publish()){await window.vitSubs.adminSet(x.id,{status:"removed",publishedId:null,removalRequested:false});await aLoad()}
+}
+
+/* ===== Administration ===== */
+let adminReady=false,draft=null,toDelete=[],editing=null,ed=null;
+const cfg=()=>({owner:$("#c-owner").value.trim(),repo:$("#c-repo").value.trim(),branch:$("#c-branch").value.trim()||"main",token:$("#c-token").value.trim()});
+function status(msg,type){const s=$("#status");s.textContent=msg;s.className="status "+(type||"")}
+function initAdmin(){
+  if(adminReady)return;adminReady=true;
+  $("#c-owner").value=store.get("vit_owner")||"fabienlocatelli-lgtm";
+  $("#c-repo").value=store.get("vit_repo")||"vitrine";
+  $("#c-branch").value=store.get("vit_branch")||"main";
+  const t=store.get("vit_token");if(t){$("#c-token").value=t;$("#c-remember").checked=true}
+  draft=structuredClone(DATA);bindSite();renderList();
+  $("#c-load").onclick=loadFromGitHub;
+  $("#p-new").onclick=()=>startEdit(null);
   initEditor();
   $("#publish").onclick=publish;$("#publish").disabled=true;
   $("#export").onclick=exportJson;
