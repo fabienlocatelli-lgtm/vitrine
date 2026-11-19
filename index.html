@@ -21,7 +21,7 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",sy
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-header.top{display:flex;justify-content:flex-end;align-items:center;padding:18px 0}
+header.top{gap:10px;display:flex;justify-content:flex-end;align-items:center;padding:18px 0}
 .brand{font-weight:600;letter-spacing:.01em;color:var(--muted)}
 button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:8px;text-decoration:none;display:inline-block}
 button:hover,.btn:hover{background:var(--surface2)}
@@ -111,12 +111,20 @@ textarea{min-height:110px;resize:vertical}
 .lb .nav{background:rgba(255,255,255,.14)}
 .lb .lbc{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:42px;height:42px;padding:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;border-color:transparent}
 .lb .cnt{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:0;right:0;color:#ddd}
+.sec{font-size:1.4rem;margin:8px 0 18px}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.by{color:var(--muted);font-size:.85rem}
+.badge{font-size:.8rem;color:var(--muted);flex:1 1 200px}
+#contrib{padding:10px 0 80px}
+#contrib h1{font-size:1.6rem;margin:10px 0}
+.det{padding:8px 0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
+  <a class="btn" href="#contribuer" id="propose">Proposer un projet</a>
   <button id="theme" type="button" aria-label="Changer de thème">☀</button>
 </header>
 
@@ -127,7 +135,10 @@ textarea{min-height:110px;resize:vertical}
     <p class="intro" id="h-intro"></p>
     <p class="who" id="h-who"></p>
   </section>
-  <section class="grid" id="grid" aria-label="Projets"></section>
+  <h2 class="sec" id="h-mine" hidden>Mes projets</h2>
+  <section class="grid" id="grid" aria-label="Mes projets"></section>
+  <h2 class="sec" id="h-com" hidden>Projets de la communauté</h2>
+  <section class="grid" id="grid2" aria-label="Projets de la communauté" hidden></section>
 </main>
 
 <main id="admin" hidden>
@@ -174,6 +185,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="row" style="margin-top:12px"><button type="button" id="p-new">Ajouter un projet</button></div>
   </div>
 
+  <div id="e-home"></div>
   <div class="card" id="editor" hidden>
     <h3 id="e-head">Projet</h3>
     <label for="e-title">Titre</label><input type="text" id="e-title">
@@ -211,6 +223,32 @@ textarea{min-height:110px;resize:vertical}
     </div>
     <div class="status" id="status" role="status"></div>
   </div>
+
+  <div class="card">
+    <h3>5. Projets proposés par la communauté <span class="hint" id="a-count"></span></h3>
+    <p class="hint" id="a-who" style="margin:0 0 8px;word-break:break-all"></p>
+    <div class="row"><button type="button" id="a-google">Se connecter avec Google</button><button type="button" id="a-refresh" hidden>Actualiser</button></div>
+    <ul class="plist" id="a-list" style="margin-top:10px"></ul>
+    <div class="status" id="a-msg"></div>
+    <p class="hint">Accepter ou retirer un projet le publie sur GitHub : charge d’abord les données du site (étape 1).</p>
+  </div>
+</main>
+
+<main id="contrib" hidden>
+  <div class="row" style="justify-content:space-between"><h1>Proposer un projet</h1><a class="btn" href="#" id="cback">Retour au site</a></div>
+  <div class="card" id="c-login">
+    <h3>Se connecter</h3>
+    <p style="margin:0 0 8px">Tu as créé quelque chose avec l’IA et tu veux le montrer ici ? Connecte-toi avec ton compte Google, puis envoie ton projet. Chaque projet est relu avant d’être publié, et tu peux le modifier ensuite (la modification est relue à son tour).</p>
+    <p class="hint">Limites : 5 projets par personne, 1 image de tuile et 10 captures par projet (8 Mo maximum par fichier, réduit automatiquement). Si la connexion échoue dans le navigateur intégré d’une application (LinkedIn par exemple), ouvre la page dans Safari ou Chrome.</p>
+    <div class="row" style="margin-top:12px"><button type="button" class="primary" id="c-google">Se connecter avec Google</button></div>
+  </div>
+  <div class="card" id="c-panel" hidden>
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0" id="c-who"></h3><button type="button" id="c-out">Se déconnecter</button></div>
+    <ul class="plist" id="c-list"></ul>
+    <div class="row" style="margin-top:12px"><button type="button" class="primary" id="c-new">Proposer un projet</button><span class="hint" id="c-limit"></span></div>
+  </div>
+  <div id="c-slot"></div>
+  <div class="status" id="c-status" role="status"></div>
 </main>
 
 <footer><div id="f-links"></div></footer>
@@ -229,7 +267,7 @@ textarea{min-height:110px;resize:vertical}
 <script>
 /* Données de repli : utilisées tant que projects.json n’existe pas dans le dépôt. */
 const DEFAULT={
-  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:38},
+  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:54},
   projects:[
     {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
     {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
@@ -257,15 +295,18 @@ function renderSite(){
   const li=safeUrl(s.linkedin);
   $("#h-who").innerHTML=`<span><strong>${esc(s.name||"")}</strong>${s.role?", "+esc(s.role):""}</span>`+(li?`<a class="btn" href="${esc(li)}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`:"");
   renderFooter(s);
-  const g=$("#grid");
-  if(!DATA.projects.length){g.innerHTML='<p class="empty">Aucun projet pour l’instant.</p>';return}
-  g.innerHTML=DATA.projects.map((p,i)=>{
-    const im=safeImg(p.preview);
+  const cardOf=([p,i])=>{const im=safeImg(p.preview);
     return `<button type="button" class="tile" data-i="${i}">
       <div class="thumb${p.fit?" fit":""}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
       <div class="body"><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p>
-      <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div><span class="likec" data-lc="${esc(p.id)}"></span></div></button>`}).join("");
-  g.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
+      <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+      <div class="meta">${p.community&&p.author?`<span class="by">par ${esc(p.author)}</span>`:"<span></span>"}<span class="likec" data-lc="${esc(p.id)}"></span></div></div></button>`};
+  const mine=[],com=[];DATA.projects.forEach((p,i)=>(p.community?com:mine).push([p,i]));
+  const g=$("#grid"),g2=$("#grid2");
+  g.innerHTML=mine.length?mine.map(cardOf).join(""):(com.length?"":'<p class="empty">Aucun projet pour l’instant.</p>');
+  g2.innerHTML=com.map(cardOf).join("");
+  $("#h-mine").hidden=$("#h-com").hidden=g2.hidden=!com.length;
+  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
   paintLikes();
 }
 let lastFocus=null,CAR={imgs:[],i:0,title:""},curPid=null;
@@ -281,7 +322,7 @@ function openModal(p,from){
       <button type="button" class="zoom" aria-label="Voir en plein écran">⤢</button></div>
     ${multi?`<div class="cnt" id="c-cnt" aria-live="polite"></div><div class="mini">${imgs.map((u,i)=>`<button type="button" data-i="${i}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>`:""}</div>`:"";
   $("#modal").innerHTML=`<button type="button" class="close" aria-label="Fermer">✕</button>
-    <h2 id="m-title">${esc(p.title)}</h2><p class="sum">${esc(p.summary)}</p>
+    <h2 id="m-title">${esc(p.title)}</h2><p class="sum">${esc(p.summary)}</p>${p.community&&p.author?`<p class="sum">Proposé par ${esc(p.author)}</p>`:""}
     <div class="tags" style="margin:0 0 4px">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
     ${car}
     <div class="desc">${esc(p.description)}</div>
@@ -315,6 +356,7 @@ let LK={counts:{},mine:new Set(),on:false},dataReady=false;
 async function likesLoad(){if(!dataReady||!window.vitLikes)return;
   try{const r=await window.vitLikes.load(DATA.projects.map(p=>p.id));LK.counts=r.counts;LK.mine=new Set(r.mine);LK.on=true;paintLikes()}catch(e){}}
 addEventListener("vit-likes-ready",likesLoad);
+addEventListener("vit-likes-ready",()=>{if(!$("#contrib").hidden)initContrib();if(!$("#admin").hidden)initAdminSubs()});
 function paintLikes(){document.querySelectorAll("[data-lc]").forEach(el=>{const n=LK.counts[el.dataset.lc];el.textContent=n==null?"":"♥ "+n});paintModalLike()}
 function paintModalLike(){const b=$("#m-like");if(!b)return;b.hidden=!LK.on;if(!LK.on)return;
   const on=LK.mine.has(curPid),n=LK.counts[curPid];b.setAttribute("aria-pressed",String(on));
@@ -345,32 +387,26 @@ async function loadPublic(){
 
 /* Routage #admin */
 function route(){
-  const adm=location.hash==="#admin";
-  $("#public").hidden=adm;$("#admin").hidden=!adm;
-  if(adm)initAdmin();
+  const adm=location.hash==="#admin",con=location.hash==="#contribuer";
+  $("#public").hidden=adm||con;$("#admin").hidden=!adm;$("#contrib").hidden=!con;
+  if(adm){moveEditor("admin");initAdmin()}
+  if(con)initContrib();
 }
-$("#back").onclick=e=>{e.preventDefault();history.pushState(null,"",location.pathname);route();renderSite()};
+const goBack=e=>{e.preventDefault();history.pushState(null,"",location.pathname);route();renderSite()};
+$("#back").onclick=goBack;$("#cback").onclick=goBack;
 addEventListener("hashchange",route);
 
-/* ===== Administration ===== */
-let adminReady=false,draft=null,toDelete=[],editing=null,ed=null;
-const cfg=()=>({owner:$("#c-owner").value.trim(),repo:$("#c-repo").value.trim(),branch:$("#c-branch").value.trim()||"main",token:$("#c-token").value.trim()});
-function status(msg,type){const s=$("#status");s.textContent=msg;s.className="status "+(type||"")}
-function initAdmin(){
-  if(adminReady)return;adminReady=true;
-  $("#c-owner").value=store.get("vit_owner")||"fabienlocatelli-lgtm";
-  $("#c-repo").value=store.get("vit_repo")||"vitrine";
-  $("#c-branch").value=store.get("vit_branch")||"main";
-  const t=store.get("vit_token");if(t){$("#c-token").value=t;$("#c-remember").checked=true}
-  draft=structuredClone(DATA);bindSite();renderList();
-  $("#c-load").onclick=loadFromGitHub;
-  $("#p-new").onclick=()=>startEdit(null);
-  $("#e-ok").onclick=validateEdit;
-  $("#e-cancel").onclick=()=>{$("#editor").hidden=true;ed=null};
-  $("#e-prev").onchange=async e=>{const f=e.target.files[0];if(f){ed.preview=await compress(f,900,.82);renderThumbs()}e.target.value=""};
-  $("#e-imgs").onchange=async e=>{for(const f of e.target.files)ed.images.push(await compress(f,1600,.82));renderThumbs();e.target.value=""};
+/* ===== Éditeur partagé, contribution, validation ===== */
+let MODE="admin",CU=null,CSUBS=[],CEDIT=null,cBound=false,edInit=false,AU=null,aBound=false,ASUBS=[],GHLOADED=false;
+const ST={pending:"En attente de validation",published:"Publié",rejected:"Refusé",removed:"Retiré du site"};
+function moveEditor(m){MODE=m;if(m==="contrib")$("#c-slot").appendChild($("#editor"));else $("#e-home").after($("#editor"));
+  $("#editor").hidden=true;$("#e-ok").textContent=m==="contrib"?"Envoyer pour validation":"Valider le projet"}
+function initEditor(){
+  if(edInit)return;edInit=true;
+  initEditor();
   $("#publish").onclick=publish;$("#publish").disabled=true;
   $("#export").onclick=exportJson;
+  initAdminSubs();
 }
 const siteMap={title:"#s-title",tagline:"#s-tag",intro:"#s-intro",name:"#s-name",role:"#s-role",linkedin:"#s-linkedin",pageAi:"#s-pageai",requests:"#s-req"};
 function bindSite(){for(const k in siteMap){const el=$(siteMap[k]);el.value=draft.site[k]||"";el.oninput=()=>{draft.site[k]=el.value}}}
@@ -394,12 +430,7 @@ function renderList(){
 function queueDelete(p){[p.preview,...(p.images||[])].forEach(u=>{if(u&&u.startsWith("img/"))toDelete.push(u)})}
 function startEdit(i){
   editing=i;
-  ed=i===null?{id:"",title:"",summary:"",description:"",tags:[],link:"",git:"",preview:"",images:[],fit:false,ai:"",carbon:"",carbonSrc:""}:structuredClone(draft.projects[i]);
-  $("#e-head").textContent=i===null?"Nouveau projet":"Modifier le projet";
-  $("#e-title").value=ed.title;$("#e-sum").value=ed.summary;$("#e-desc").value=ed.description;
-  $("#e-tags").value=(ed.tags||[]).join(", ");$("#e-link").value=ed.link||"";$("#e-git").value=ed.git||"";
-  $("#e-ai").value=ed.ai||"";$("#e-carbon").value=ed.carbon||"";$("#e-csrc").value=ed.carbonSrc||"";$("#e-fit").checked=!!ed.fit;
-  renderThumbs();$("#editor").hidden=false;$("#editor").scrollIntoView({behavior:"smooth"});$("#e-title").focus();
+  openEditor(i===null?{id:"",title:"",summary:"",description:"",tags:[],link:"",git:"",preview:"",images:[],fit:false,ai:"",carbon:"",carbonSrc:""}:structuredClone(draft.projects[i]),i===null?"Nouveau projet":"Modifier le projet");
 }
 function renderThumbs(){
   $("#e-prev-th").innerHTML=ed.preview?`<figure><img src="${esc(ed.preview)}" alt="Aperçu"><button type="button" data-k="p" aria-label="Retirer">✕</button></figure>`:"";
@@ -420,18 +451,21 @@ function validateEdit(){
   const cv=$("#e-carbon").value.trim().replace(",",".");
   if(cv&&!isFinite(+cv)){alert("Le bilan carbone doit être un nombre (en gCO2eq).");return}
   ed.carbon=cv?String(+cv).replace(".",","):"";
+  if(MODE==="contrib")return contribSave();
   if(!ed.id)ed.id=slug(t)+"-"+Date.now().toString(36);
   if(editing===null)draft.projects.push(ed);else draft.projects[editing]=ed;
   $("#editor").hidden=true;ed=null;renderList();
   status("Projet validé. N’oublie pas de publier.","ok");
 }
-function compress(file,max,q){return new Promise((res,rej)=>{
+function compress(file,max,q,cap=Infinity){return new Promise((res,rej)=>{
   const img=new Image(),u=URL.createObjectURL(file);
-  img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
-    c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
-    const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
-    URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",q))};
-  img.onerror=()=>rej(new Error("Image illisible"));img.src=u})}
+  img.onload=()=>{URL.revokeObjectURL(u);let k=Math.min(1,max/Math.max(img.width,img.height));
+    for(let t=0;t<8;t++){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));
+      const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+      const out=c.toDataURL("image/jpeg",q);if(out.length<=cap)return res(out);
+      if(q>.5)q-=.1;else k*=.8}
+    rej(new Error("Image trop lourde, même après réduction."))};
+  img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("Image illisible"))};img.src=u})}
 
 /* API GitHub */
 const u8b64=s=>{let t="";new TextEncoder().encode(s).forEach(c=>t+=String.fromCharCode(c));return btoa(t)};
@@ -451,11 +485,11 @@ async function loadFromGitHub(){
     const f=await gh("projects.json","GET");
     if(f){const d=JSON.parse(b64u8(f.content));draft={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects||[]};status("Données chargées depuis GitHub.","ok")}
     else{status("Pas encore de projects.json dans le dépôt : l’exemple par défaut est conservé. Il sera créé à la première publication.","ok")}
-    toDelete=[];bindSite();renderList();$("#publish").disabled=false;
+    toDelete=[];bindSite();renderList();$("#publish").disabled=false;GHLOADED=true;
   }catch(e){status(e.message,"err")}
 }
 async function publish(){
-  const btn=$("#publish");btn.disabled=true;
+  const btn=$("#publish");btn.disabled=true;let okp=false;
   try{saveCfg();
     const out=structuredClone(draft);let n=0;
     const up=async(dataUrl,name)=>{status("Envoi de l’image "+(++n)+"…");
@@ -470,9 +504,9 @@ async function publish(){
     await gh("projects.json","PUT",{message:"Mise à jour de la vitrine",content:u8b64(JSON.stringify(out,null,2)),sha:cur?cur.sha:undefined});
     for(const path of toDelete){try{const f=await gh(path,"GET");if(f)await gh(path,"DELETE",{message:"Suppression "+path,sha:f.sha})}catch(e){}}
     toDelete=[];draft=out;renderList();DATA=structuredClone(out);
-    status("Publié. Le site sera à jour dans 1 à 2 minutes.","ok");
+    status("Publié. Le site sera à jour dans 1 à 2 minutes.","ok");okp=true;
   }catch(e){status(e.message+"\nRien n’est perdu : corrige puis relance la publication.","err")}
-  btn.disabled=false;
+  btn.disabled=false;return okp;
 }
 function exportJson(){
   const keep=structuredClone(draft);
@@ -484,10 +518,10 @@ function exportJson(){
 loadPublic().then(route);
 </script>
 <script type="module">
-/* Likes uniques : Firebase (authentification anonyme + Firestore). Cette configuration est publique par conception. */
+/* Firebase : likes (authentification anonyme) + comptes Google pour proposer des projets. Cette configuration est publique par conception. */
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,onAuthStateChanged,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,collection,query,where,getCountFromServer,getDocs,doc,setDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth,onAuthStateChanged,signInAnonymously,signInWithPopup,linkWithPopup,signInWithCredential,GoogleAuthProvider,signOut as fbSignOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,query,where,getCountFromServer,getDocs,doc,setDoc,updateDoc,deleteDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({
   apiKey:"AIzaSyBUNvDZvRdNkbwWKzMYDkwIaKN_djaKhlM",
   authDomain:"vitrine-7d85a.firebaseapp.com",
@@ -496,9 +530,14 @@ const app=initializeApp({
   messagingSenderId:"782893553411",
   appId:"1:782893553411:web:ea21b41abd958e5ab73b36"
 });
-const auth=getAuth(app),db=getFirestore(app),col=collection(db,"likes");
-let uid=null;
-const first=new Promise(r=>onAuthStateChanged(auth,u=>{uid=u?u.uid:uid;r(u?u.uid:null)}));
+const auth=getAuth(app),db=getFirestore(app),col=collection(db,"likes"),subs=collection(db,"submissions");
+const provider=new GoogleAuthProvider();
+let uid=null,settled=false,resolveFirst;const first=new Promise(r=>resolveFirst=r);const lis=[];
+const nameOf=u=>(u.displayName||(u.providerData.find(p=>p.displayName)||{}).displayName||"Contributeur").slice(0,80);
+const userObj=()=>{const u=auth.currentUser;return u?{uid:u.uid,isAnonymous:u.isAnonymous,name:nameOf(u)}:null};
+const notify=()=>{const o=userObj();lis.forEach(f=>f(o))};
+onAuthStateChanged(auth,u=>{uid=u?u.uid:null;settled=true;resolveFirst(uid);notify()});
+const plain=d=>({id:d.id,...d.data()});
 window.vitLikes={
   async load(ids){
     const counts={};
@@ -512,6 +551,40 @@ window.vitLikes={
     const ref=doc(db,"likes",pid+"_"+uid);
     if(liked)await deleteDoc(ref);else await setDoc(ref,{pid,uid});
   }
+};
+window.vitSubs={
+  onUser(cb){lis.push(cb);if(settled)cb(userObj())},
+  async signIn(){
+    const cu=auth.currentUser;
+    if(cu&&cu.isAnonymous){
+      try{await linkWithPopup(cu,provider);notify();return}
+      catch(e){if(e.code==="auth/credential-already-in-use"){const c=GoogleAuthProvider.credentialFromError(e);if(c){await signInWithCredential(auth,c);notify();return}}throw e}
+    }
+    await signInWithPopup(auth,provider);notify();
+  },
+  async signOut(){await fbSignOut(auth)},
+  async mine(){if(!uid)return [];return (await getDocs(query(subs,where("ownerUid","==",uid)))).docs.map(plain)},
+  async images(id){return (await getDocs(collection(db,"submissions",id,"images"))).docs.map(plain)},
+  async save(id,isNew,f,preview,shots){
+    if(!uid)throw new Error("Non connecté");
+    const ref=doc(db,"submissions",id),now=Date.now();
+    if(isNew)await setDoc(ref,{...f,ownerUid:uid,ownerName:nameOf(auth.currentUser),status:"pending",removalRequested:false,publishedId:null,rejectNote:"",createdAt:now,updatedAt:now});
+    else await updateDoc(ref,{...f,status:"pending",removalRequested:false,updatedAt:now});
+    const ic=collection(db,"submissions",id,"images");
+    const old=await getDocs(ic);await Promise.all(old.docs.map(d=>deleteDoc(d.ref)));
+    const w=[];
+    if(preview)w.push(setDoc(doc(ic,"p"),{data:preview,kind:"preview",order:0}));
+    shots.forEach((d,i)=>w.push(setDoc(doc(ic,"s"+(i+1)),{data:d,kind:"shot",order:i+1})));
+    await Promise.all(w);
+  },
+  async remove(id){
+    const old=await getDocs(collection(db,"submissions",id,"images"));
+    await Promise.all(old.docs.map(d=>deleteDoc(d.ref)));
+    await deleteDoc(doc(db,"submissions",id));
+  },
+  async requestRemoval(id){await updateDoc(doc(db,"submissions",id),{removalRequested:true,updatedAt:Date.now()})},
+  async adminList(){return (await getDocs(subs)).docs.map(plain)},
+  async adminSet(id,patch){await updateDoc(doc(db,"submissions",id),{...patch,updatedAt:Date.now()})}
 };
 window.dispatchEvent(new Event("vit-likes-ready"));
 </script>
