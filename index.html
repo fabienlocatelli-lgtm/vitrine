@@ -118,6 +118,12 @@ textarea{min-height:110px;resize:vertical}
 #contrib{padding:10px 0 80px}
 #contrib h1{font-size:1.6rem;margin:10px 0}
 .det{padding:8px 0}
+.share{display:inline-flex;gap:8px;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface2);color:var(--text);border:1px solid var(--line);padding:10px 16px;border-radius:10px;z-index:50;max-width:90vw}
+.tbl{border-collapse:collapse;width:100%;font-size:.9rem;margin-top:10px}
+.tbl th,.tbl td{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl thead th{color:var(--muted);font-weight:600;border-top:0}
+code{background:var(--surface2);padding:1px 6px;border-radius:6px;word-break:break-all}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -232,6 +238,15 @@ textarea{min-height:110px;resize:vertical}
     <div class="status" id="a-msg"></div>
     <p class="hint">Accepter ou retirer un projet le publie sur GitHub : charge d’abord les données du site (étape 1).</p>
   </div>
+
+  <div class="card">
+    <h3>6. Statistiques (visiteurs uniques)</h3>
+    <p class="hint" id="x-mark" style="margin:0 0 8px"></p>
+    <div class="row"><button type="button" id="x-mark-btn"></button><button type="button" id="x-load" class="primary">Charger les statistiques</button></div>
+    <div style="overflow-x:auto"><table class="tbl" id="x-table"></table></div>
+    <div class="status" id="x-msg"></div>
+    <p class="hint">Les chiffres comptent chaque visiteur une seule fois par projet. Les navigateurs marqués « internes » sont indiqués à part entre parenthèses. Lecture réservée à ton compte administrateur (section 5). Lien à donner à tes collègues pour marquer leur navigateur comme interne : <code id="x-link"></code></p>
+  </div>
 </main>
 
 <main id="contrib" hidden>
@@ -241,6 +256,7 @@ textarea{min-height:110px;resize:vertical}
     <p style="margin:0 0 8px">Tu as créé quelque chose avec l’IA et tu veux le montrer ici ? Connecte-toi avec ton compte Google, puis envoie ton projet. Chaque projet est relu avant d’être publié, et tu peux le modifier ensuite (la modification est relue à son tour).</p>
     <p class="hint">Limites : 5 projets par personne, 1 image de tuile et 10 captures par projet (8 Mo maximum par fichier, réduit automatiquement). Si la connexion échoue dans le navigateur intégré d’une application (LinkedIn par exemple), ouvre la page dans Safari ou Chrome.</p>
     <div class="row" style="margin-top:12px"><button type="button" class="primary" id="c-google">Se connecter avec Google</button></div>
+    <div class="status" id="c-login-msg" role="alert"></div>
   </div>
   <div class="card" id="c-panel" hidden>
     <div class="row" style="justify-content:space-between"><h3 style="margin:0" id="c-who"></h3><button type="button" id="c-out">Se déconnecter</button></div>
@@ -264,10 +280,12 @@ textarea{min-height:110px;resize:vertical}
   <div class="cnt" id="lb-cnt"></div>
 </div>
 
+<div id="toast" class="toast" role="status" hidden></div>
+
 <script>
 /* Données de repli : utilisées tant que projects.json n’existe pas dans le dépôt. */
 const DEFAULT={
-  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:54},
+  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:76},
   projects:[
     {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
     {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
@@ -309,9 +327,11 @@ function renderSite(){
   document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openModal(DATA.projects[b.dataset.i],b));
   paintLikes();
 }
-let lastFocus=null,CAR={imgs:[],i:0,title:""},curPid=null;
-function openModal(p,from){
+let lastFocus=null,CAR={imgs:[],i:0,title:""},curPid=null,pushed=false;
+function openModal(p,from,viaLink){
   lastFocus=from;curPid=p.id;
+  if(!viaLink&&location.hash!=="#projet-"+p.id){history.pushState(null,"","#projet-"+p.id);pushed=true}
+  trackStat("view",p.id);if(viaLink)trackStat("link",p.id);
   const imgs=(p.images||[]).map(safeImg).filter(Boolean),multi=imgs.length>1;
   CAR={imgs,i:0,title:p.title||""};
   const l=safeUrl(p.link),g=safeUrl(p.git);
@@ -327,13 +347,14 @@ function openModal(p,from){
     ${car}
     <div class="desc">${esc(p.description)}</div>
     ${(p.ai||p.carbon)?`<dl class="facts">${p.ai?`<div><dt>IA utilisée :</dt><dd>${esc(p.ai)}</dd></div>`:""}${p.carbon?`<div><dt>Bilan carbone :</dt><dd>${esc(p.carbon)} gCO2eq${p.carbonSrc?` <small>(${esc(p.carbonSrc)})</small>`:""}</dd></div>`:""}</dl>`:""}
-    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}<button type="button" class="like" id="m-like" hidden aria-pressed="false"></button></div>`;
+    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}<button type="button" class="share" id="m-share" aria-label="Partager ce projet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg><span>Partager</span></button><button type="button" class="like" id="m-like" hidden aria-pressed="false"></button></div>`;
   $("#overlay").hidden=false;document.body.style.overflow="hidden";
   const m=$("#modal");m.querySelector(".close").onclick=closeModal;
   if(imgs.length){carSet(0);m.querySelector(".zoom").onclick=lbOpen;m.querySelector("#c-img").onclick=lbOpen;
     if(multi){m.querySelector(".prev").onclick=()=>carGo(-1);m.querySelector(".next").onclick=()=>carGo(1);
       m.querySelectorAll(".mini button").forEach(b=>b.onclick=()=>carSet(+b.dataset.i));swipe(m.querySelector(".stage"),carGo)}}
   m.querySelector("#m-like").onclick=onLike;paintModalLike();
+  m.querySelector("#m-share").onclick=shareProject;
   m.querySelector(".close").focus();
 }
 function carSet(i){const n=CAR.imgs.length;if(!n)return;CAR.i=(i+n)%n;
@@ -372,8 +393,12 @@ function renderFooter(s){
   let h=`<p>Page créée avec ${esc(s.pageAi||"une IA")}. Code sous <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">licence Apache 2.0</a>.</p>`;
   if(n>0){const e=n*0.047/1000,kg=e*0.0461,f=x=>x.toLocaleString("fr-FR",{maximumSignificantDigits:3});
     h+=`<p>Bilan carbone estimé de la création de cette page : ${f(kg*1000)} gCO₂e. Calcul : E = ${f(n)} requêtes × 0,047 kWh / 1000 requêtes = ${f(e)} kWh, puis ${f(e)} kWh × 0,0461 kgCO₂e/kWh = ${f(kg)} kgCO₂e. Estimation haute, avec une marge pour la longueur du contexte de la conversation.</p>`}
+  h+=`<p>Statistiques de fréquentation anonymes (visiteurs uniques), sans cookie publicitaire.</p>`;
   $("#f-links").innerHTML=h}
-function closeModal(){$("#overlay").hidden=true;document.body.style.overflow="";if(lastFocus)lastFocus.focus()}
+function closeModal(){
+  $("#overlay").hidden=true;document.body.style.overflow="";if(lastFocus)lastFocus.focus();
+  if(/^#projet-/.test(location.hash)){if(pushed){pushed=false;history.back()}else history.replaceState(null,"",location.pathname+location.search)}
+}
 $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal()};
 document.addEventListener("keydown",e=>{
   if(!$("#lb").hidden){if(e.key==="Escape")lbClose();else if(e.key==="ArrowLeft")carGo(-1);else if(e.key==="ArrowRight")carGo(1);return}
@@ -383,6 +408,7 @@ document.addEventListener("keydown",e=>{
 async function loadPublic(){
   try{const r=await fetch("projects.json?"+Date.now());if(r.ok){const d=await r.json();if(d&&Array.isArray(d.projects))DATA={site:{...DEFAULT.site,...(d.site||{})},projects:d.projects}}}catch(e){}
   renderSite();dataReady=true;likesLoad();
+  if(location.hash!=="#admin")trackStat("visit","site");
 }
 
 /* Routage #admin */
@@ -391,10 +417,71 @@ function route(){
   $("#public").hidden=adm||con;$("#admin").hidden=!adm;$("#contrib").hidden=!con;
   if(adm){moveEditor("admin");initAdmin()}
   if(con)initContrib();
+  const m=location.hash.match(/^#projet-([\w-]+)$/);
+  if(!adm&&!con&&m){const p=DATA.projects.find(x=>x.id===m[1]);
+    if(p){if($("#overlay").hidden||curPid!==p.id)openModal(p,null,true)}
+    else history.replaceState(null,"",location.pathname+location.search)}
+  else if(!$("#overlay").hidden)closeModal();
 }
 const goBack=e=>{e.preventDefault();history.pushState(null,"",location.pathname);route();renderSite()};
 $("#back").onclick=goBack;$("#cback").onclick=goBack;
 addEventListener("hashchange",route);
+
+/* ===== Statistiques, partage, marqueur interne ===== */
+const pendingStats=[];
+function trackStat(t,pid){if(window.vitStats)window.vitStats.track(t,pid);else pendingStats.push([t,pid])}
+addEventListener("vit-likes-ready",()=>{while(pendingStats.length)window.vitStats.track(...pendingStats.shift())});
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;setTimeout(()=>{t.hidden=true},4500)}
+function handleMarker(){
+  const h=location.hash;
+  if(h!=="#interne"&&h!=="#externe")return;
+  if(h==="#interne")store.set("vit_internal","1");else store.del("vit_internal");
+  history.replaceState(null,"",location.pathname+location.search);
+  toast(h==="#interne"?"Ce navigateur est marqué comme interne : ses visites sont comptées à part.":"Marquage interne retiré pour ce navigateur.");
+}
+async function shareProject(){
+  const p=DATA.projects.find(x=>x.id===curPid);if(!p)return;
+  const url=location.origin+location.pathname+"#projet-"+p.id;
+  let msg="",done=false;
+  if(navigator.share){try{await navigator.share({title:p.title,text:p.summary||p.title,url});done=true}catch(e){if(e&&e.name==="AbortError")return}}
+  if(!done){
+    try{await navigator.clipboard.writeText(url);done=true;msg="Lien copié"}
+    catch(e){const t=document.createElement("textarea");t.value=url;document.body.appendChild(t);t.select();try{done=document.execCommand("copy");msg="Lien copié"}catch(_){}t.remove()}
+    if(!done)msg="Copie impossible";
+  }
+  if(done)trackStat("share",p.id);
+  const sp=document.querySelector("#m-share span");
+  if(sp&&msg){sp.textContent=msg;setTimeout(()=>{const s2=document.querySelector("#m-share span");if(s2)s2.textContent="Partager"},2200)}
+}
+const AUTH_MSG={"auth/popup-blocked":"La fenêtre de connexion a été bloquée par le navigateur : autorise les pop-ups pour ce site, puis réessaie.","auth/popup-closed-by-user":"Connexion annulée avant la fin.","auth/cancelled-popup-request":"Connexion annulée avant la fin.","auth/unauthorized-domain":"Ce domaine n’est pas autorisé dans Firebase (Authentication > Settings > Authorized domains).","auth/operation-not-allowed":"La connexion Google n’est pas activée dans Firebase (Authentication > Sign-in method)."};
+const authMsg=e=>AUTH_MSG[e&&e.code]||"Connexion impossible : "+((e&&(e.code||e.message))||"erreur inconnue");
+let xInit=false;
+function initStats(){
+  if(xInit)return;xInit=true;
+  $("#x-link").textContent=location.origin+location.pathname+"#interne";
+  const paint=()=>{const on=store.get("vit_internal")==="1";
+    $("#x-mark").textContent=on?"Ce navigateur est marqué comme interne.":"Ce navigateur est compté comme visiteur externe.";
+    $("#x-mark-btn").textContent=on?"Retirer le marquage interne":"Marquer ce navigateur comme interne"};
+  $("#x-mark-btn").onclick=()=>{if(store.get("vit_internal")==="1")store.del("vit_internal");else store.set("vit_internal","1");paint()};
+  paint();$("#x-load").onclick=xLoad;
+}
+async function xLoad(){
+  const msg=$("#x-msg");
+  if(!window.vitStats){msg.textContent="Firebase indisponible : recharge la page.";return}
+  msg.textContent="Chargement…";
+  try{
+    const docs=await window.vitStats.all(),m={};
+    const row=k=>m[k]||(m[k]={view:[0,0],share:[0,0],link:[0,0],visit:[0,0]});
+    docs.forEach(d=>{const r=row(d.pid);if(r[d.t])r[d.t][d.internal?1:0]++});
+    const f=a=>`${a[0]}${a[1]?` <small>(+${a[1]} int.)</small>`:""}`;
+    const list=draft?draft.projects:DATA.projects;
+    const lk=id=>LK.on&&LK.counts[id]!=null?LK.counts[id]:"–";
+    $("#x-table").innerHTML=`<thead><tr><th>Projet</th><th>Affichages</th><th>Partages</th><th>Via lien partagé</th><th>J’aime</th></tr></thead><tbody>
+      <tr><td><strong>Visites de la vitrine</strong></td><td>${f(row("site").visit)}</td><td></td><td></td><td></td></tr>
+      ${list.map(p=>{const r=row(p.id);return `<tr><td>${esc(p.title)}</td><td>${f(r.view)}</td><td>${f(r.share)}</td><td>${f(r.link)}</td><td>${lk(p.id)}</td></tr>`}).join("")}</tbody>`;
+    msg.textContent=`${docs.length} enregistrement(s) lu(s).`;
+  }catch(e){msg.textContent=e.code==="permission-denied"?"Accès refusé : connecte-toi avec Google (section 5) et ajoute les règles « stats » dans Firestore.":"Erreur : "+(e.code||e.message)}
+}
 
 /* ===== Éditeur partagé, contribution, validation ===== */
 let MODE="admin",CU=null,CSUBS=[],CEDIT=null,cBound=false,edInit=false,AU=null,aBound=false,ASUBS=[],GHLOADED=false;
@@ -431,7 +518,7 @@ function initContrib(){
   if(!window.vitSubs){cStatus("Connexion indisponible pour le moment. Recharge la page.","err");return}
   cStatus("");
   if(!cBound){cBound=true;
-    $("#c-google").onclick=async()=>{try{await window.vitSubs.signIn()}catch(e){cStatus("Connexion impossible : "+(e.code||e.message),"err")}};
+    $("#c-google").onclick=async()=>{const m=$("#c-login-msg");m.textContent="";try{await window.vitSubs.signIn()}catch(e){m.textContent=authMsg(e);m.className="status err"}};
     $("#c-out").onclick=()=>window.vitSubs.signOut();
     $("#c-new").onclick=()=>cEdit(null);
     window.vitSubs.onUser(u=>{CU=u;cRender()})}
@@ -494,7 +581,7 @@ async function contribSave(){
 function initAdminSubs(){
   if(!window.vitSubs){$("#a-msg").textContent="Firebase indisponible : recharge la page.";return}
   if(aBound)return;aBound=true;
-  $("#a-google").onclick=async()=>{try{await window.vitSubs.signIn()}catch(e){$("#a-msg").textContent="Connexion impossible : "+(e.code||e.message)}};
+  $("#a-google").onclick=async()=>{try{await window.vitSubs.signIn()}catch(e){$("#a-msg").textContent=authMsg(e)}};
   $("#a-refresh").onclick=aLoad;
   window.vitSubs.onUser(u=>{AU=u;aRender()});
 }
@@ -574,7 +661,7 @@ function initAdmin(){
   initEditor();
   $("#publish").onclick=publish;$("#publish").disabled=true;
   $("#export").onclick=exportJson;
-  initAdminSubs();
+  initAdminSubs();initStats();
 }
 const siteMap={title:"#s-title",tagline:"#s-tag",intro:"#s-intro",name:"#s-name",role:"#s-role",linkedin:"#s-linkedin",pageAi:"#s-pageai",requests:"#s-req"};
 function bindSite(){for(const k in siteMap){const el=$(siteMap[k]);el.value=draft.site[k]||"";el.oninput=()=>{draft.site[k]=el.value}}}
@@ -683,6 +770,7 @@ function exportJson(){
   status("Fichier téléchargé. Les images ajoutées y sont intégrées en base64 : préfère « Publier ».");
 }
 
+handleMarker();
 loadPublic().then(route);
 </script>
 <script type="module">
@@ -753,6 +841,21 @@ window.vitSubs={
   async requestRemoval(id){await updateDoc(doc(db,"submissions",id),{removalRequested:true,updatedAt:Date.now()})},
   async adminList(){return (await getDocs(subs)).docs.map(plain)},
   async adminSet(id,patch){await updateDoc(doc(db,"submissions",id),{...patch,updatedAt:Date.now()})}
+};
+const isInt=()=>{try{return localStorage.getItem("vit_internal")==="1"}catch(e){return false}};
+let anonP=null;
+async function ensureUid(){await first;const cu=auth.currentUser;if(cu)return cu.uid;return (anonP=anonP||signInAnonymously(auth).then(c=>c.user.uid))}
+window.vitStats={
+  async track(t,pid){
+    const key="vit_s_"+t+"_"+pid;
+    try{if(localStorage.getItem(key))return}catch(e){}
+    try{
+      const u=await ensureUid();
+      await setDoc(doc(db,"stats",t+"_"+pid+"_"+u),{t,pid,uid:u,internal:isInt(),ts:Date.now()});
+      try{localStorage.setItem(key,"1")}catch(e){}
+    }catch(e){if(e&&e.code==="permission-denied"){try{localStorage.setItem(key,"1")}catch(_){}}}
+  },
+  async all(){return (await getDocs(collection(db,"stats"))).docs.map(d=>d.data())}
 };
 window.dispatchEvent(new Event("vit-likes-ready"));
 </script>
