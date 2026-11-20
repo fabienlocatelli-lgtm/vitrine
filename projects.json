@@ -152,6 +152,21 @@
       "images": [
         "img/cmwozu7yetvw-mwp08x46-1.jpg"
       ]
+    },
+    {
+      "id": "tableau-de-bord-d-une-boite-mail-mwpbow9d",
+      "title": "Tableau de bord d'une boîte mail",
+      "summary": "Tableau de bord d'une boîte de réception Outlook",
+      "description": "Il s'agit d'une interface Web qui affiche les éléments d'une boîte de réception mail Outlook et qui permet :\n* L'affichage des mails dans des tuiles categorisées en fonction d'adresses mails et/ou de mots-clés\n* Le tri dans un dossier et la lecture d'un fil entier de mail par un simple bouton\n* L'affichage rapide des mails destinataires, en copie seulement.\n\nProjet testé uniquement en environnement personnel. Non déployé en milieu professionnel (pas de validation DSI à ce jour).",
+      "tags": [],
+      "link": "",
+      "git": "",
+      "preview": "",
+      "images": [],
+      "fit": false,
+      "ai": "",
+      "carbon": "",
+      "carbonSrc": ""
     }
   ]
 }
