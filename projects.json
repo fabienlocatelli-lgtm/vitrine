@@ -87,6 +87,26 @@
       "ai": "",
       "carbon": "",
       "carbonSrc": ""
+    },
+    {
+      "id": "cmwozsgvqr60",
+      "title": "Tableau de suivi des mandats ASTRE",
+      "summary": "Tableau de bord pour suivre les dates de paiement des mandats Astre",
+      "description": "Afin de suivre l'avancement des mandats et éviter de les consulter individuellement dans Astre, j'ai créé ce tableau de bord où il suffit de glisser un export de tous les mandats en cours en format csv, cette page traduit les informations exportées en une page Web plus lisible.",
+      "tags": [
+        "web",
+        "html"
+      ],
+      "link": "",
+      "git": "",
+      "ai": "Claude",
+      "carbon": "0,141",
+      "carbonSrc": "Estimation avec 3 requêtes effectuées",
+      "fit": false,
+      "community": true,
+      "author": "Aicha Rahal",
+      "preview": "img/cmwozsgvqr60-apercu-mwozsgvr.jpg",
+      "images": []
     }
   ]
 }
