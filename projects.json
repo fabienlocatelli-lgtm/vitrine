@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "Codé avec l’IA, pensé par moi",
+    "title": "Codé avec l’IA, pensé par nous",
     "tagline": "Pour une utilisation de l'IA sobre et raisonnée.",
-    "intro": "Voici la vitrine des applications et interfaces web que j'ai pu construire grâce à Mistral, Claude ou encore Copilot via uniquement les tokens disponibles en version grand public gratuitement.",
+    "intro": "Voici la vitrine des applications et interfaces web que la communauté ou moi avons pu construire grâce à Mistral, Claude ou encore Copilot via uniquement les tokens disponibles en version grand public gratuitement.",
     "name": "Fabien Locatelli",
     "role": "",
     "linkedin": "https://www.linkedin.com/in/fabien-locatelli",
