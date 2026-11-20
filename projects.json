@@ -107,6 +107,27 @@
       "author": "Aicha Rahal",
       "preview": "img/cmwozsgvqr60-apercu-mwozsgvr.jpg",
       "images": []
+    },
+    {
+      "id": "cmwozu7yetvw",
+      "title": "Outil d'aide aux liquidations dans Astre",
+      "summary": "Logiciel créant un dossier avec les pièces nécessaires à la création d'une liquidation dans Astre",
+      "description": "Lors de la création d\"une liquidation pour des subventions FEDER, il est nécessaire de préparer en amont des pièces à joindre dans Astre. Ce logiciel, basé sur un tableau de correspondance adaptable, permet de créer automatiquement un sous-dossier intitulé \"LIQUIDATION\" avec rapatriement des pièces renommées dans le formalisme attendu pour le logiciel ASTRE.",
+      "tags": [
+        "python"
+      ],
+      "link": "",
+      "git": "",
+      "ai": "Claude",
+      "carbon": "0,705",
+      "carbonSrc": "Estimation sur la base de 15 requêtes effectuées",
+      "fit": false,
+      "community": true,
+      "author": "Aicha Rahal",
+      "preview": "",
+      "images": [
+        "img/cmwozu7yetvw-mwozu7yf-1.jpg"
+      ]
     }
   ]
 }
