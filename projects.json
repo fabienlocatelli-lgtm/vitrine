@@ -11,32 +11,6 @@
   },
   "projects": [
     {
-      "id": "calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm",
-      "title": "Calcul du coût d'un trajet en voiture",
-      "summary": "Calculatrice et suivi de coût d'un trajet en voiture",
-      "description": "Il s'agit d'une calculatrice basée sur les informations implémentées par l'utilisateur. Les informations sont conservées localement sur l'ordinateur/mobile de l'utilisateur. Le coût d'un trajet comprend (1) le coût de l'essence calculé à partir d'une trace gpx (GPSlogger), d'une origine-destination ou simplement d'une distance et (2) le coût des charges d'une voiture lissé par km sur la base de l'année N-1. L'impact du dénivelé et de la météo sont pris en compte à partir de données open-source chargé en fonction du trajet. Aussi, le bilan carbone est dressé pour chaque trajet. Le profil du véhicule est personnalisable ainsi que le poids transporté.",
-      "tags": [
-        "web",
-        "html",
-        "js",
-        "calculatrice",
-        "quotidien",
-        "voiture"
-      ],
-      "link": "https://fabienlocatelli-lgtm.github.io/CoutTrajet/",
-      "git": "https://github.com/fabienlocatelli-lgtm/CoutTrajet",
-      "preview": "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-apercu-mwjgc34b.jpg",
-      "images": [
-        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg",
-        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwkqymkv-2.jpg",
-        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwl9klme-3.jpg"
-      ],
-      "ai": "Mistral Vibe · modèle GLM 5.3",
-      "carbonSrc": "cf. section Informations de l'application",
-      "fit": true,
-      "carbon": "0,13"
-    },
-    {
       "id": "recherche-double-financement-mwkw2afr",
       "title": "Recherche double financement",
       "summary": "Recherche de subventions automatisée avec captures d'écran horodatées",
@@ -65,10 +39,34 @@
       "carbonSrc": "\"E = requêtes × 0,047 kWh/1000 requêtes\" puis \"E × 0,0461 kgCO₂e/kWh\" avec une base de 100 requêtes environ"
     },
     {
+      "id": "assistant-d-upload-sur-cedre-alfresco-mwp6fx2y",
+      "title": "Assistant d'upload sur Cèdre/Alfresco",
+      "summary": "Application qui fluidifie l'import de fichier sur Cèdre (Alfresco)",
+      "description": "Il s'agit d'une interface qui vient patcher l'interface d'upload web de Cèdre/Alfresco qui fonctionne mal et qui, s'il y a une erreur dans un dossier de plusieurs fichiers, ne vous précise pas où est l'erreur. Cet assistant vous permet d'uploader des dossiers avec plusieurs fichiers de manière plus rapide car il utilise la session multiple et vous fait un rapport sur les erreurs d'upload s'il y en a. Simple d'utilisation, vous rentrez le chemin cèdre (lien url du dossier dans lequel vous voulez uploader) et vous parcourrez vers le dossier ou fichier que vous souhaitez uploader. Cet assistant est inutile pour l'upload de fichier à l'unité.\n\nProjet testé uniquement en environnement de test. Non déployé (pas de validation DSI à ce jour).",
+      "tags": [
+        "python",
+        "Cèdre",
+        "Alfresco",
+        "upload",
+        "automatisation",
+        "interface"
+      ],
+      "link": "",
+      "git": "",
+      "preview": "",
+      "images": [
+        "img/assistant-d-upload-sur-cedre-alfresco-mwp6fx2y-mwp6glbp-1.jpg"
+      ],
+      "fit": false,
+      "ai": "",
+      "carbon": "",
+      "carbonSrc": ""
+    },
+    {
       "id": "upload-organise-vers-un-cloud-mwl9fc3i",
       "title": "Upload organisé vers un cloud",
       "summary": "Upload organisé depuis un serveur vers un cloud type Alfresco",
-      "description": "Il s'agit d'une application permettant l'upload depuis un serveur Windows vers un cloud type Alfresco régulier de dossiers comportant des fichiers ordonnés selon une arborescence donnée, en les renommant et en complétant une checklist Excel. Une extraction PDF des pièces manquantes est possible.\n\nAvantages :\n* Gestion d'upload de plusieurs fichiers en parallèle (20 par exemple) avec une ouverture de sessions multiples ;\n* Gain de temps significatif pour l'archivage des dossiers vers le cloud ;\n* Rapport d'erreur sur les fichiers non uploadés ;\n* Dézippage des zip et recomposition par dossiers identiques sur le cloud ;\n* Uniformisation du renommage et du choix des pièces.",
+      "description": "Il s'agit d'une application permettant l'upload depuis un serveur Windows vers un cloud type Alfresco régulier de dossiers comportant des fichiers ordonnés selon une arborescence donnée, en les renommant et en complétant une checklist Excel. Une extraction PDF des pièces manquantes est possible.\n\nAvantages :\n* Gestion d'upload de plusieurs fichiers en parallèle (20 par exemple) avec une ouverture de sessions multiples ;\n* Gain de temps significatif pour l'archivage des dossiers vers le cloud ;\n* Rapport d'erreur sur les fichiers non uploadés ;\n* Dézippage des zip et recomposition par dossiers identiques sur le cloud ;\n* Uniformisation du renommage et du choix des pièces.\n\nProjet testé uniquement en environnement de test. Non déployé (pas de validation DSI à ce jour).",
       "tags": [
         "python",
         "cloud",
@@ -87,6 +85,32 @@
       "ai": "",
       "carbon": "",
       "carbonSrc": ""
+    },
+    {
+      "id": "calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm",
+      "title": "Calcul du coût d'un trajet en voiture",
+      "summary": "Calculatrice et suivi de coût d'un trajet en voiture",
+      "description": "Il s'agit d'une calculatrice basée sur les informations implémentées par l'utilisateur. Les informations sont conservées localement sur l'ordinateur/mobile de l'utilisateur. Le coût d'un trajet comprend (1) le coût de l'essence calculé à partir d'une trace gpx (GPSlogger), d'une origine-destination ou simplement d'une distance et (2) le coût des charges d'une voiture lissé par km sur la base de l'année N-1. L'impact du dénivelé et de la météo sont pris en compte à partir de données open-source chargé en fonction du trajet. Aussi, le bilan carbone est dressé pour chaque trajet. Le profil du véhicule est personnalisable ainsi que le poids transporté.",
+      "tags": [
+        "web",
+        "html",
+        "js",
+        "calculatrice",
+        "quotidien",
+        "voiture"
+      ],
+      "link": "https://fabienlocatelli-lgtm.github.io/CoutTrajet/",
+      "git": "https://github.com/fabienlocatelli-lgtm/CoutTrajet",
+      "preview": "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-apercu-mwjgc34b.jpg",
+      "images": [
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwjgc34b-1.jpg",
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwkqymkv-2.jpg",
+        "img/calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm-mwl9klme-3.jpg"
+      ],
+      "ai": "Mistral Vibe · modèle GLM 5.3",
+      "carbonSrc": "cf. section Informations de l'application",
+      "fit": true,
+      "carbon": "0,13"
     },
     {
       "id": "cmwozsgvqr60",
