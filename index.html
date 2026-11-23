@@ -12,9 +12,9 @@
 <meta property="og:url" content="https://fabienlocatelli-lgtm.github.io/vitrine/">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-:root{--bg:#13161b;--surface:#1b1f26;--surface2:#232831;--line:#2d333d;--text:#e9ebef;--muted:#9aa3b2;--accent:#7fb2ff;--accent-ink:#0b1220;--danger:#ff7b7b;--ok:#6fd6a0;
+:root{--bg:#13161b;--surface:#1b1f26;--surface2:#232831;--line:#2d333d;--text:#e9ebef;--muted:#9aa3b2;--accent:#7fb2ff;--accent-ink:#0b1220;--danger:#ff7b7b;--ok:#6fd6a0;--st-ok:#3dbb74;--st-test:#f2a33a;--st-idea:#e5534b;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-:root[data-theme="light"]{--bg:#f5f6f8;--surface:#ffffff;--surface2:#eceef2;--line:#d9dde4;--text:#1a1e25;--muted:#5d6676;--accent:#1f5fd1;--accent-ink:#ffffff;--danger:#c23a3a;--ok:#1c8a5a}
+:root[data-theme="light"]{--bg:#f5f6f8;--surface:#ffffff;--surface2:#eceef2;--line:#d9dde4;--text:#1a1e25;--muted:#5d6676;--accent:#1f5fd1;--accent-ink:#ffffff;--danger:#c23a3a;--ok:#1c8a5a;--st-ok:#1f9d5a;--st-test:#d98a12;--st-idea:#d23b33}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;min-height:100vh}
@@ -124,6 +124,12 @@ textarea{min-height:110px;resize:vertical}
 .tbl th,.tbl td{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
 .tbl thead th{color:var(--muted);font-weight:600;border-top:0}
 code{background:var(--surface2);padding:1px 6px;border-radius:6px;word-break:break-all}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex:0 0 auto;cursor:help;box-shadow:0 0 0 2px var(--surface)}
+.dot.deploye{background:var(--st-ok)}.dot.test{background:var(--st-test)}.dot.idee{background:var(--st-idea)}
+.mleft{display:flex;align-items:center;gap:8px;min-width:0}
+.links{align-items:center}
+.lr{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -207,6 +213,8 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;word-break:bre
       <div><label for="e-carbon">Bilan carbone en gCO2eq (optionnel, nombre)</label><input type="text" id="e-carbon" inputmode="decimal" placeholder="ex. 12,5"></div>
     </div>
     <label for="e-csrc">Méthode ou source du calcul (optionnel)</label><input type="text" id="e-csrc" placeholder="ex. estimation à partir du nombre de requêtes">
+    <label for="e-state">Avancement du projet</label>
+    <select id="e-state"><option value="">Non précisé (aucune pastille)</option><option value="deploye">Déployé (vert)</option><option value="test">Fonctionnel en mode test (orange)</option><option value="idee">À l’état d’idée (rouge)</option></select>
     <label for="e-prev">Image de la tuile</label>
     <input type="file" id="e-prev" accept="image/*">
     <label class="chk"><input type="checkbox" id="e-fit"> Afficher l’image en entier (sans recadrage)</label>
@@ -285,10 +293,10 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;word-break:bre
 <script>
 /* Données de repli : utilisées tant que projects.json n’existe pas dans le dépôt. */
 const DEFAULT={
-  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:76},
+  site:{title:"Codé avec l’IA, pensé par moi",tagline:"Un aperçu de ce que je construis avec l’aide de l’IA.",intro:"Présentation à écrire depuis l’administration (#admin).",name:"Fabien Locatelli",role:"",linkedin:"",pageAi:"Claude Sonnet 5.5 (Anthropic)",requests:84},
   projects:[
-    {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
-    {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
+    {id:"exemple-1",title:"Projet exemple 1",summary:"Un outil fictif pour montrer l’apparence d’une tuile.",description:"Description détaillée du projet : le besoin de départ, ce que l’outil fait, et comment il a été construit avec l’IA.\n\nCe projet est fictif et sera à supprimer.",state:"test",tags:["python","automatisation"],link:"",git:"",preview:"",images:[]},
+    {id:"exemple-2",title:"Projet exemple 2",summary:"Une petite application web fictive, avec lien de démonstration.",description:"Deuxième exemple fictif, à remplacer par un vrai projet via l’interface d’administration.",state:"deploye",tags:["web/html/css","javascript"],link:"https://example.com",git:"https://github.com/fabienlocatelli-lgtm/vitrine",preview:"",images:[]}
   ]
 };
 const $=s=>document.querySelector(s);
@@ -304,6 +312,8 @@ $("#theme").onclick=()=>setTheme(document.documentElement.dataset.theme==="dark"
 setTheme(store.get("vit_theme")==="light"?"light":"dark");
 
 /* Rendu public */
+const STATE_LABEL={deploye:"déployé",test:"fonctionnel en mode test",idee:"à l’état d’idée"};
+const dotOf=p=>STATE_LABEL[p.state]?`<span class="dot ${p.state}" role="img" title="${STATE_LABEL[p.state]}" aria-label="Avancement : ${STATE_LABEL[p.state]}"></span>`:"";
 function renderSite(){
   const s=DATA.site;
   document.title=s.title||"Vitrine";
@@ -318,7 +328,7 @@ function renderSite(){
       <div class="thumb${p.fit?" fit":""}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:esc((p.title||"?").trim().charAt(0).toUpperCase())}</div>
       <div class="body"><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p>
       <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
-      <div class="meta">${p.community&&p.author?`<span class="by">par ${esc(p.author)}</span>`:"<span></span>"}<span class="likec" data-lc="${esc(p.id)}"></span></div></div></button>`};
+      <div class="meta"><span class="mleft">${dotOf(p)}${p.community&&p.author?`<span class="by">par ${esc(p.author)}</span>`:""}</span><span class="likec" data-lc="${esc(p.id)}"></span></div></div></button>`};
   const mine=[],com=[];DATA.projects.forEach((p,i)=>(p.community?com:mine).push([p,i]));
   const g=$("#grid"),g2=$("#grid2");
   g.innerHTML=mine.length?mine.map(cardOf).join(""):(com.length?"":'<p class="empty">Aucun projet pour l’instant.</p>');
@@ -347,7 +357,7 @@ function openModal(p,from,viaLink){
     ${car}
     <div class="desc">${esc(p.description)}</div>
     ${(p.ai||p.carbon)?`<dl class="facts">${p.ai?`<div><dt>IA utilisée :</dt><dd>${esc(p.ai)}</dd></div>`:""}${p.carbon?`<div><dt>Bilan carbone :</dt><dd>${esc(p.carbon)} gCO2eq${p.carbonSrc?` <small>(${esc(p.carbonSrc)})</small>`:""}</dd></div>`:""}</dl>`:""}
-    <div class="links">${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}<button type="button" class="share" id="m-share" aria-label="Partager ce projet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg><span>Partager</span></button><button type="button" class="like" id="m-like" hidden aria-pressed="false"></button></div>`;
+    <div class="links">${dotOf(p)}${l?`<a class="btn primary" href="${esc(l)}" target="_blank" rel="noopener noreferrer">Voir le projet</a>`:""}${g?`<a class="btn" href="${esc(g)}" target="_blank" rel="noopener noreferrer">Code source</a>`:""}<div class="lr"><button type="button" class="like" id="m-like" hidden aria-pressed="false"></button><button type="button" class="share" id="m-share" aria-label="Partager ce projet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg><span>Partager</span></button></div></div>`;
   $("#overlay").hidden=false;document.body.style.overflow="hidden";
   const m=$("#modal");m.querySelector(".close").onclick=closeModal;
   if(imgs.length){carSet(0);m.querySelector(".zoom").onclick=lbOpen;m.querySelector("#c-img").onclick=lbOpen;
@@ -507,7 +517,7 @@ function openEditor(obj,head){
   ed=obj;ed.images=ed.images||[];$("#e-head").textContent=head;
   $("#e-title").value=ed.title||"";$("#e-sum").value=ed.summary||"";$("#e-desc").value=ed.description||"";
   $("#e-tags").value=(ed.tags||[]).join(", ");$("#e-link").value=ed.link||"";$("#e-git").value=ed.git||"";
-  $("#e-ai").value=ed.ai||"";$("#e-carbon").value=ed.carbon||"";$("#e-csrc").value=ed.carbonSrc||"";$("#e-fit").checked=!!ed.fit;
+  $("#e-ai").value=ed.ai||"";$("#e-carbon").value=ed.carbon||"";$("#e-csrc").value=ed.carbonSrc||"";$("#e-fit").checked=!!ed.fit;$("#e-state").value=ed.state||"";
   renderThumbs();$("#editor").hidden=false;$("#editor").scrollIntoView({behavior:"smooth"});$("#e-title").focus();
 }
 
@@ -559,10 +569,10 @@ async function cEdit(s){
     let obj;
     if(s){cStatus("Chargement des images…");
       const imgs=await window.vitSubs.images(s.id),pv=imgs.find(x=>x.kind==="preview"),sh=imgs.filter(x=>x.kind==="shot").sort((a,b)=>a.order-b.order);
-      obj={title:s.title,summary:s.summary,description:s.description,tags:s.tags||[],link:s.link,git:s.git,ai:s.ai,carbon:s.carbon,carbonSrc:s.carbonSrc,fit:!!s.fit,preview:pv?pv.data:"",images:sh.map(x=>x.data)};
+      obj={title:s.title,summary:s.summary,description:s.description,tags:s.tags||[],link:s.link,git:s.git,ai:s.ai,carbon:s.carbon,carbonSrc:s.carbonSrc,fit:!!s.fit,state:s.state||"",preview:pv?pv.data:"",images:sh.map(x=>x.data)};
       CEDIT={id:s.id,isNew:false};cStatus("")}
     else{const n=cFreeSlot();if(!n)return;
-      obj={title:"",summary:"",description:"",tags:[],link:"",git:"",ai:"",carbon:"",carbonSrc:"",fit:false,preview:"",images:[]};CEDIT={id:CU.uid+"_"+n,isNew:true}}
+      obj={title:"",summary:"",description:"",tags:[],link:"",git:"",ai:"",carbon:"",carbonSrc:"",fit:false,state:"",preview:"",images:[]};CEDIT={id:CU.uid+"_"+n,isNew:true}}
     openEditor(obj,s?"Modifier mon projet":"Nouveau projet");
   }catch(e){cStatus("Chargement impossible : "+(e.code||e.message),"err")}
 }
@@ -570,7 +580,7 @@ async function contribSave(){
   if(ed.title.length>120||ed.summary.length>300||ed.description.length>5000){alert("Textes trop longs : titre 120, aperçu 300, description 5000 caractères maximum.");return}
   const btn=$("#e-ok");btn.disabled=true;cStatus("Envoi en cours…");
   try{
-    const f={title:ed.title,summary:ed.summary,description:ed.description,tags:ed.tags.slice(0,8),link:ed.link,git:ed.git,ai:ed.ai,carbon:ed.carbon,carbonSrc:ed.carbonSrc,fit:ed.fit,nImages:ed.images.length,hasPreview:!!ed.preview};
+    const f={title:ed.title,summary:ed.summary,description:ed.description,tags:ed.tags.slice(0,8),link:ed.link,git:ed.git,ai:ed.ai,carbon:ed.carbon,carbonSrc:ed.carbonSrc,fit:ed.fit,state:ed.state||"",nImages:ed.images.length,hasPreview:!!ed.preview};
     await window.vitSubs.save(CEDIT.id,CEDIT.isNew,f,ed.preview,ed.images);
     $("#editor").hidden=true;ed=null;cStatus("Projet envoyé. Il sera visible après validation.","ok");await cRender();
   }catch(e){cStatus("Envoi impossible : "+(e.code||e.message)+"\nVérifie les limites (textes, images) puis réessaie.","err")}
@@ -622,7 +632,7 @@ async function aView(x,det){
   if(!det.hidden){det.hidden=true;return}
   det.hidden=false;det.textContent="Chargement…";
   const imgs=(await window.vitSubs.images(x.id)).sort((a,b)=>a.order-b.order).filter(m=>/^data:image\//.test(m.data||""));
-  det.innerHTML=`<p>${esc(x.summary)}</p><p style="white-space:pre-line">${esc(x.description)}</p><p class="hint">Étiquettes : ${esc((x.tags||[]).join(", "))}<br>Lien : ${esc(x.link||"–")}<br>Git : ${esc(x.git||"–")}<br>IA : ${esc(x.ai||"–")} · Carbone : ${esc(x.carbon||"–")} gCO2eq ${esc(x.carbonSrc||"")}</p><div class="thumbs">${imgs.map(m=>`<img src="${esc(m.data)}" alt="">`).join("")}</div>`;
+  det.innerHTML=`<p>${esc(x.summary)}</p><p style="white-space:pre-line">${esc(x.description)}</p><p class="hint">Étiquettes : ${esc((x.tags||[]).join(", "))}<br>Lien : ${esc(x.link||"–")}<br>Git : ${esc(x.git||"–")}<br>État : ${esc(x.state||"–")}<br>IA : ${esc(x.ai||"–")} · Carbone : ${esc(x.carbon||"–")} gCO2eq ${esc(x.carbonSrc||"")}</p><div class="thumbs">${imgs.map(m=>`<img src="${esc(m.data)}" alt="">`).join("")}</div>`;
 }
 async function approveSub(x){
   if(!GHLOADED){alert("Charge d’abord les données du site (étape 1).");return}
@@ -631,7 +641,7 @@ async function approveSub(x){
   const all=[...(pv?[pv]:[]),...sh];
   if(all.some(m=>!/^data:image\/jpeg;base64,/.test(m.data||""))){alert("Une image n’est pas un JPEG valide : refuse ou demande au contributeur de la renvoyer.");return}
   const pid=x.publishedId||"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-  const proj={id:pid,title:x.title,summary:x.summary,description:x.description,tags:x.tags||[],link:x.link||"",git:x.git||"",ai:x.ai||"",carbon:x.carbon||"",carbonSrc:x.carbonSrc||"",fit:!!x.fit,community:true,author:x.ownerName,preview:pv?pv.data:"",images:sh.map(m=>m.data)};
+  const proj={id:pid,title:x.title,summary:x.summary,description:x.description,tags:x.tags||[],link:x.link||"",git:x.git||"",ai:x.ai||"",carbon:x.carbon||"",carbonSrc:x.carbonSrc||"",fit:!!x.fit,state:x.state||"",community:true,author:x.ownerName,preview:pv?pv.data:"",images:sh.map(m=>m.data)};
   const k=draft.projects.findIndex(p=>p.id===pid);
   if(k>=0){queueDelete(draft.projects[k]);draft.projects[k]=proj}else draft.projects.push(proj);
   renderList();
@@ -702,7 +712,7 @@ function validateEdit(){
   ed.title=t;ed.summary=$("#e-sum").value.trim();ed.description=$("#e-desc").value.trim();
   ed.tags=$("#e-tags").value.split(",").map(x=>x.trim()).filter(Boolean);
   ed.link=$("#e-link").value.trim();ed.git=$("#e-git").value.trim();
-  ed.ai=$("#e-ai").value.trim();ed.carbonSrc=$("#e-csrc").value.trim();ed.fit=$("#e-fit").checked;
+  ed.ai=$("#e-ai").value.trim();ed.carbonSrc=$("#e-csrc").value.trim();ed.fit=$("#e-fit").checked;ed.state=$("#e-state").value;
   const cv=$("#e-carbon").value.trim().replace(",",".");
   if(cv&&!isFinite(+cv)){alert("Le bilan carbone doit être un nombre (en gCO2eq).");return}
   ed.carbon=cv?String(+cv).replace(".",","):"";
