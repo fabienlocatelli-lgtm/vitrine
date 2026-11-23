@@ -36,7 +36,8 @@
       "fit": false,
       "ai": "Copilot",
       "carbon": "0,22",
-      "carbonSrc": "\"E = requêtes × 0,047 kWh/1000 requêtes\" puis \"E × 0,0461 kgCO₂e/kWh\" avec une base de 100 requêtes environ"
+      "carbonSrc": "\"E = requêtes × 0,047 kWh/1000 requêtes\" puis \"E × 0,0461 kgCO₂e/kWh\" avec une base de 100 requêtes environ",
+      "state": "deploye"
     },
     {
       "id": "assistant-d-upload-sur-cedre-alfresco-mwp6fx2y",
@@ -60,7 +61,8 @@
       "fit": false,
       "ai": "",
       "carbon": "",
-      "carbonSrc": ""
+      "carbonSrc": "",
+      "state": "test"
     },
     {
       "id": "upload-organise-vers-un-cloud-mwl9fc3i",
@@ -84,7 +86,8 @@
       "fit": false,
       "ai": "",
       "carbon": "",
-      "carbonSrc": ""
+      "carbonSrc": "",
+      "state": "test"
     },
     {
       "id": "calcul-du-cout-d-un-trajet-en-voiture-mwjgbzjm",
@@ -110,7 +113,8 @@
       "ai": "Mistral Vibe · modèle GLM 5.3",
       "carbonSrc": "cf. section Informations de l'application",
       "fit": true,
-      "carbon": "0,13"
+      "carbon": "0,13",
+      "state": "deploye"
     },
     {
       "id": "cmwozsgvqr60",
@@ -130,13 +134,14 @@
       "community": true,
       "author": "Aicha Rahal",
       "preview": "img/cmwozsgvqr60-apercu-mwozsgvr.jpg",
-      "images": []
+      "images": [],
+      "state": "deploye"
     },
     {
       "id": "cmwozu7yetvw",
       "title": "Outil d'aide aux liquidations dans Astre",
       "summary": "Logiciel créant un dossier avec les pièces nécessaires à la création d'une liquidation dans Astre",
-      "description": "Lors de la création d\"une liquidation pour des subventions FEDER, il est nécessaire de préparer en amont des pièces à joindre dans Astre. Ce logiciel, basé sur un tableau de correspondance adaptable, permet de créer automatiquement un sous-dossier intitulé \"LIQUIDATION\" avec rapatriement des pièces renommées dans le formalisme attendu pour le logiciel ASTRE.",
+      "description": "Lors de la création d'une liquidation pour des subventions FEDER, il est nécessaire de préparer en amont des pièces à joindre dans Astre. Ce logiciel, basé sur un tableau de correspondance adaptable, permet de créer automatiquement un sous-dossier intitulé \"LIQUIDATION\" avec rapatriement des pièces renommées dans le formalisme attendu pour le logiciel ASTRE.",
       "tags": [
         "python"
       ],
@@ -151,7 +156,8 @@
       "preview": "",
       "images": [
         "img/cmwozu7yetvw-mwp08x46-1.jpg"
-      ]
+      ],
+      "state": "test"
     },
     {
       "id": "tableau-de-bord-d-une-boite-mail-mwpbow9d",
@@ -169,7 +175,8 @@
       "fit": false,
       "ai": "",
       "carbon": "",
-      "carbonSrc": ""
+      "carbonSrc": "",
+      "state": "test"
     }
   ]
 }
